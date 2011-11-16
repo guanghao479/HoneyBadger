@@ -4,7 +4,7 @@
  * @author  jingfu
  */
 
-#include "SgSimpleSockClient.h"
+#include "SimpleSockClient.h"
 
 /**
  * Method to set up a connection to SgServrer for client

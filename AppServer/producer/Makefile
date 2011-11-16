@@ -1,6 +1,6 @@
 CC=g++
 LIBS= -lxerces-c
-OBJ = SgSimpleSockClient.o SgSimpleSockClientTest.o
+OBJ = SimpleSockClient.o SimpleSockClientTest.o
 EXE=client
 
 %.o: %.c

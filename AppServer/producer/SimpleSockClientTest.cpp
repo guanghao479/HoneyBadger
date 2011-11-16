@@ -13,7 +13,7 @@
 #include <iostream>
 #include <string>
 
-#include "SgSimpleSockClient.h"
+#include "SimpleSockClient.h"
 
 using namespace std;
 using namespace xercesc;
