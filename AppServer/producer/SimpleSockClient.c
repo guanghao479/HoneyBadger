@@ -22,7 +22,7 @@ int hb_connect(char const* host, int port, hb_conn_t* client) {
     return NOT_READY;
   }
 
-  //client->mode = test; //TODO uncomment when run in prod
+  client->mode = prod; //TODO uncomment when run in prod
 
   client->send_tmo = kSendTimeout;
   client->recv_tmo = kRecvTimeout;
@@ -73,12 +73,12 @@ int hb_connect(char const* host, int port, hb_conn_t* client) {
  * @return: 0 if non-error
  */
 int hb_log(hb_conn_t* client, uint8_t* buf, int nbuf) {
-
   if(client->isRunning != 1) {
     printf("Error - never connected\n");
     return NOT_READY;
   }
 
+	memset(client->sendBuf, 0, kSingleMsgSizeLimit);
   //do framing
   frame_t len = nbuf;
   assert((nbuf+sizeof(len)) <= kSingleMsgSizeLimit);
@@ -92,7 +92,7 @@ int hb_log(hb_conn_t* client, uint8_t* buf, int nbuf) {
   }
   memcpy(&client->sendBuf[client->sendSize], buf, nbuf);
   client->sendSize += nbuf;
-	//printd("buf: %s\n", &client->sendBuf[4]);
+	printd("hb_log(): buf=\n%s\n", &client->sendBuf[4]);
 
   if( send(client->sock, client->sendBuf, client->sendSize, 0)
       != client->sendSize ) {

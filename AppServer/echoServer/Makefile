@@ -1,6 +1,6 @@
 name=echoServer
 CC=g++
-LIBS = -levent
+LIBS = -levent -lxerces-c
 
 # --- targets
 all:   
