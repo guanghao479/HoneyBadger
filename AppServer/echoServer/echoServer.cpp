@@ -56,7 +56,7 @@ int read_out_buffer(struct evbuffer* input, char** precord, uint32_t* precord_le
 	*precord = record;
 	*precord_len = record_len;
 
-	printd("size: %d, content: %s, real_len: %d\n", record_len, record, strlen(record));
+	//printd("size: %d, content: %s, real_len: %d\n", record_len, record, strlen(record));
 
 	return OK;
 }
@@ -107,6 +107,8 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 done:
 	delete parser;
 	delete errHandler;
+
+	//sleep(10);
 
 	return ret;
 }
