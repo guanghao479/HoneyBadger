@@ -2,6 +2,9 @@
 //  This is a simple class that lets us do easy (though not terribly efficient)
 //  trancoding of char* data to XMLCh data.
 // ---------------------------------------------------------------------------
+#include <xercesc/util/XMLString.hpp>
+
+using namespace xercesc;
 class XStr
 {
 public :

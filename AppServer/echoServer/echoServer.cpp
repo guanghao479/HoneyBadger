@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "../HBcommon.h"
+#include "../XStr.cpp"
 
 using namespace std;
 using namespace xercesc;
@@ -78,6 +79,30 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 	MemBufInputSource xml_buf((XMLByte*)record,(XMLSize_t) (record_len ), "test", false);
 	try {
 		parser->parse(xml_buf);
+		// no need to free this, owned by parent parser project
+		DOMDocument* xmlDoc = parser->getDocument();
+		// Get the top-level element
+		DOMElement* elementRoot = xmlDoc->getDocumentElement();
+		if( !elementRoot ) { ret = BAD_XML; goto done;}
+		cout << "root: " << elementRoot->getTagName()<< endl;
+
+		DOMNodeList*      children = elementRoot->getChildNodes();
+		const  XMLSize_t nodeCount = children->getLength();
+		cout <<" nod count: " << nodeCount << endl;
+
+		for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
+			DOMNode* currentNode = children->item(xx);
+			if( currentNode->getNodeType() &&  // true is not NULL
+					currentNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+				DOMElement* currentElement
+					= dynamic_cast< xercesc::DOMElement* >( currentNode );
+				if( XMLString::equals(currentElement->getTagName(), X("Type"))) {
+					cout << "Got it!!" << endl;
+				}
+			}
+
+		}
+
 	}
 	catch (const XMLException& toCatch) {
 		char* message = XMLString::transcode(toCatch.getMessage());
