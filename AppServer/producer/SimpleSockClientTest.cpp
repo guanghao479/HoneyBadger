@@ -66,13 +66,13 @@ int total_passed = 0;
 int total_tests = 0;
 void log_without_connect();
 void log_some_msgs();
-void new_register(std::string, std::string);
+void new_register(std::string, std::string, std::string);
 void dup_register();
 void valid_login();
 void invalid_login();
 void init_sync();
 void event_sync();
-void createIdPwDoc(DOMDocument* doc, string type, string id, string pw);
+void createRegisterDoc(DOMDocument* doc, string id, string pw, string email);
 void log_some_msgs(string msg, int len);
 
 int main(int argc, char** argv) {
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
 
 	log_without_connect();
 	log_some_msgs();
-	new_register("jfu", "123");
+	new_register("jfu", "123", "jfu@cs.rpi.edu");
 	dup_register();
 	valid_login();
 	invalid_login();
@@ -175,7 +175,7 @@ void log_some_msgs() {
 }
 
 
-void new_register(std::string id, std::string passwd) {
+void new_register(std::string id, std::string passwd, std::string email) {
 	total_tests ++;
 	std::cout << std::endl << "====>" << std::endl;
 
@@ -187,12 +187,14 @@ void new_register(std::string id, std::string passwd) {
 			X("HB_Message"),         // root element name (it doesn't like space in between)
 			0);
 
-	createIdPwDoc(myDoc, "REGISTER", id, passwd);
+	createRegisterDoc(myDoc, id, passwd, email);
 
 	const XMLSize_t elementCount = myDoc->getElementsByTagName(X("*"))->getLength();
 
 	//impl          = DOMImplementationRegistry::getDOMImplementation(X("LS"));
 	DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+	DOMConfiguration *theConfig = theSerializer->getDomConfig();
+	theConfig->setParameter(X("format-pretty-print"), true);
 	//if ( theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true) )
 	//			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 	DOMLSOutput       *theOutputDesc = ((DOMImplementationLS*)impl)->createLSOutput();
@@ -225,7 +227,7 @@ void init_sync() {
 void event_sync() {
 }
 
-void createIdPwDoc(DOMDocument* doc, string type, string id, string pw) {
+void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 	int errorCode = 0;
 
 	try
@@ -239,14 +241,14 @@ void createIdPwDoc(DOMDocument* doc, string type, string id, string pw) {
 
 		DOMElement* rootElem = doc->getDocumentElement();
 
-		DOMElement*  prodElem = doc->createElement(X("type"));
+		DOMElement*  prodElem = doc->createElement(X("Register"));
 		rootElem->appendChild(prodElem);
 
-		DOMText*    prodDataVal = doc->createTextNode(X(type.c_str()));
-		prodElem->appendChild(prodDataVal);
+		DOMElement* nextElem = doc->createElement(X("Request"));
+		prodElem->appendChild(nextElem);
 
 		DOMElement*  catElem = doc->createElement(X("uid"));
-		rootElem->appendChild(catElem);
+		nextElem->appendChild(catElem);
 
 		//catElem->setAttribute(X("idea"), X("great"));
 
@@ -254,17 +256,23 @@ void createIdPwDoc(DOMDocument* doc, string type, string id, string pw) {
 		catElem->appendChild(catDataVal);
 
 		DOMElement*  devByElem = doc->createElement(X("passwd"));
-		rootElem->appendChild(devByElem);
+		nextElem->appendChild(devByElem);
 
-		DOMText*    devByDataVal = doc->createTextNode(X(pw.c_str()));
+		DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
 		devByElem->appendChild(devByDataVal);
+
+		DOMElement*  evaByElem = doc->createElement(X("email"));
+		nextElem->appendChild(evaByElem);
+
+		DOMText*  evaByDataVal = doc->createTextNode(X(email.c_str()));
+		evaByElem->appendChild(evaByDataVal);
 
 		//
 		// Now count the number of elements in the above DOM tree.
 		//
 
 		const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
-		//cout << "The tree just created contains: " << elementCount << " elements." << endl;
+		cout << "The tree just created contains: " << elementCount << " elements." << endl;
 
 		//doc->release();
 	}
