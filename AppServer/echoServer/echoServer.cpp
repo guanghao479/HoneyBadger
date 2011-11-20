@@ -98,6 +98,7 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 					= dynamic_cast< xercesc::DOMElement* >( currentNode );
 				if( XMLString::equals(currentElement->getTagName(), X("Type"))) {
 					cout << "Got it!!" << endl;
+					//cout << currentElement->getA
 				}
 			}
 
