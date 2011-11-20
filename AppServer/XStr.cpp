@@ -37,3 +37,4 @@ private :
     // -----------------------------------------------------------------------
     XMLCh*   fUnicodeForm;
 };
+#define X(str) XStr(str).unicodeForm()
