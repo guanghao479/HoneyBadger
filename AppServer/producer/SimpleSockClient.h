@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "../HBcommon.h"
+#include "../common/HBcommon.h"
 
 #define kSendTimeout 180
 #define kRecvTimeout 180

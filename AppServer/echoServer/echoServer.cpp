@@ -25,8 +25,8 @@
 #include <errno.h>
 #include <iostream>
 
-#include "../HBcommon.h"
-#include "../XStr.cpp"
+#include "../common/HBcommon.h"
+#include "../common/XStr.cpp"
 
 using namespace std;
 using namespace xercesc;
