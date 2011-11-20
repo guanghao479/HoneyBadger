@@ -241,8 +241,10 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 
 		DOMElement* rootElem = doc->getDocumentElement();
 
-		DOMElement*  prodElem = doc->createElement(X("Register"));
+		DOMElement*  prodElem = doc->createElement(X("Type"));
 		rootElem->appendChild(prodElem);
+
+		prodElem->setAttribute(X("Name"), X("Register"));
 
 		DOMElement* nextElem = doc->createElement(X("Request"));
 		prodElem->appendChild(nextElem);
