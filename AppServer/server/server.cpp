@@ -16,7 +16,6 @@
 #include <xercesc/sax/HandlerBase.hpp>
 #include <xercesc/sax/InputSource.hpp>
 
-
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,6 +29,12 @@
 
 using namespace std;
 using namespace xercesc;
+
+typedef struct msg_s {
+	string type;
+	string uid;
+	string pw;
+} msg;
 
 int read_out_buffer(struct evbuffer* input, char** precord, uint32_t* precord_len) {
 	size_t buffer_len = evbuffer_get_length(input);
@@ -77,6 +82,9 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 
 	// create an input source from string
 	MemBufInputSource xml_buf((XMLByte*)record,(XMLSize_t) (record_len ), "test", false);
+
+	// try to parse this document and get fields
+	msg msg;
 	try {
 		parser->parse(xml_buf);
 		// no need to free this, owned by parent parser project
@@ -84,11 +92,11 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 		// Get the top-level element
 		DOMElement* elementRoot = xmlDoc->getDocumentElement();
 		if( !elementRoot ) { ret = BAD_XML; goto done;}
-		cout << "root: " << elementRoot->getTagName()<< endl;
+		cout << "root: " << XMLString::transcode(elementRoot->getTagName())<< endl;
 
 		DOMNodeList*      children = elementRoot->getChildNodes();
 		const  XMLSize_t nodeCount = children->getLength();
-		cout <<" nod count: " << nodeCount << endl;
+		cout <<" node count: " << nodeCount << endl;
 
 		for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
 			DOMNode* currentNode = children->item(xx);
@@ -97,9 +105,9 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 				DOMElement* currentElement
 					= dynamic_cast< xercesc::DOMElement* >( currentNode );
 				if( XMLString::equals(currentElement->getTagName(), X("Type"))) {
-					cout << "Got it!!" << endl;
 					const XMLCh* xmlch_type = currentElement->getAttribute(X("Name"));
-					cout << "name=" << xmlch_type << endl;
+					msg.type = XMLString::transcode(xmlch_type);
+					cout << "msg type name= " << msg.type << endl;
 				}
 			}
 
