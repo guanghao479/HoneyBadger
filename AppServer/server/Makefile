@@ -1,4 +1,4 @@
-name=echoServer
+name=server
 CC=g++
 LIBS = -levent -lxerces-c
 
