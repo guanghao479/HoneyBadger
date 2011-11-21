@@ -32,7 +32,9 @@ using namespace xercesc;
 
 typedef struct user_info_s {
 	string uid;
-	string pw;
+	string passwd;
+	string hostid;
+	string email;
 } user_info;
 
 typedef struct msg_s {
@@ -72,6 +74,58 @@ int read_out_buffer(struct evbuffer* input, char** precord, uint32_t* precord_le
 	return OK;
 }
 
+//TODO: add exception handling
+int getUserInfo(DOMElement* requestElement, user_info* user) {
+	// we know User tag follows
+	DOMNodeList* children = requestElement->getChildNodes();
+	DOMNode* userNode = children->item(1);
+	DOMElement* userElement;
+	if( userNode->getNodeType() &&  // true is not NULL
+			userNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+		userElement = dynamic_cast< xercesc::DOMElement* >( userNode );
+		if( XMLString::equals(userElement->getTagName(), X("User"))) {
+			//const XMLCh* xmlch_user = userElement->getAttribute(X("Name"));
+			//msg.action_type = XMLString::transcode(xmlch_user);
+			cout << "is User " << endl;
+			children = userElement->getChildNodes();
+			const  XMLSize_t nodeCount = children->getLength();
+			for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
+				DOMNode* crtNode = children->item(xx);
+				DOMElement* crtElement;
+				if( crtNode->getNodeType() &&  // true is not NULL
+						crtNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+					crtElement = dynamic_cast< xercesc::DOMElement* >( crtNode );
+					if( XMLString::equals(crtElement->getTagName(), X("uid"))) {
+						user->uid = XMLString::transcode(crtElement->getTextContent()) ;
+					}
+					else if( XMLString::equals(crtElement->getTagName(), X("passwd"))) {
+						user->passwd = XMLString::transcode(crtElement->getTextContent()) ;
+					}
+					else if( XMLString::equals(crtElement->getTagName(), X("hostid"))) {
+						user->hostid = XMLString::transcode(crtElement->getTextContent()) ;
+					}
+					else if( XMLString::equals(crtElement->getTagName(), X("email"))) {
+						user->email = XMLString::transcode(crtElement->getTextContent()) ;
+					}
+				}
+			}
+		}
+		else {
+			cout << "error getting user tag" << endl;
+						return BAD_XML;
+		}
+	}
+	else {
+		cout << "error getting user type" << endl;
+		return BAD_XML;
+	}
+
+	cout << "getUserInfo(): uid = " << user->uid << ", passwd = " << user->passwd
+													<< ", hostid = " << user->hostid << ", email = "<< user->email << endl;
+
+	return OK;
+}
+
 // interpret and process this request in record string
 // TODO: process it
 int process_request(char* record, uint32_t record_len, string* reply_str) {
@@ -89,6 +143,7 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 	MemBufInputSource xml_buf((XMLByte*)record,(XMLSize_t) (record_len ), "test", false);
 
 	// try to parse this document and get fields
+	// TODO: maybe a better idea to put these functions into a msg class
 	msg msg;
 	try {
 		parser->parse(xml_buf);
@@ -103,41 +158,61 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 		const  XMLSize_t nodeCount = children->getLength();
 		cout <<" node count: " << nodeCount << endl;
 
-		//for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
-			DOMNode* typeNode = children->item(1);
-			DOMElement* typeElement;
-			if( typeNode->getNodeType() &&  // true is not NULL
-					typeNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-				typeElement = dynamic_cast< xercesc::DOMElement* >( typeNode );
-				if( XMLString::equals(typeElement->getTagName(), X("MessageType"))) {
-					const XMLCh* xmlch_type = typeElement->getAttribute(X("Name"));
-					msg.msg_type = XMLString::transcode(xmlch_type);
-					cout << "msg type name= " << msg.msg_type << endl;
-				}
+		//for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) { //TODO: why need to loop?
+		// we know message type tag follows
+		DOMNode* typeNode = children->item(1);
+		DOMElement* typeElement;
+		if( typeNode->getNodeType() &&  // true is not NULL
+				typeNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+			typeElement = dynamic_cast< xercesc::DOMElement* >( typeNode );
+			if( XMLString::equals(typeElement->getTagName(), X("MessageType"))) {
+				const XMLCh* xmlch_type = typeElement->getAttribute(X("Name"));
+				msg.msg_type = XMLString::transcode(xmlch_type);
+				cout << "msg type name= " << msg.msg_type << endl;
 			}
 			else {
-				printf("error getting type\n");
+				cout << "Error: wrong message type tag" << endl;
 			}
+		}
+		else {
+			cout << "Error getting msg type\n" << endl;
+		}
 
-			children = typeElement->getChildNodes();
-			DOMNode* requestNode = children->item(1);
-			DOMElement* requestElement;
-			if( requestNode->getNodeType() &&  // true is not NULL
-					requestNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-				requestElement = dynamic_cast< xercesc::DOMElement* >( requestNode );
-				if( XMLString::equals(requestElement->getTagName(), X("ActionType"))) {
-					const XMLCh* xmlch_request = requestElement->getAttribute(X("Name"));
-					msg.action_type = XMLString::transcode(xmlch_request);
-					cout << "msg action type = " << msg.request << endl;
-				}
-				else {
-					cout << "error getting request tag" << endl;
-				}
+		// we know action type tag follows
+		children = typeElement->getChildNodes();
+		DOMNode* requestNode = children->item(1);
+		DOMElement* requestElement;
+		if( requestNode->getNodeType() &&  // true is not NULL
+				requestNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+			requestElement = dynamic_cast< xercesc::DOMElement* >( requestNode );
+			if( XMLString::equals(requestElement->getTagName(), X("ActionType"))) {
+				const XMLCh* xmlch_request = requestElement->getAttribute(X("Name"));
+				msg.action_type = XMLString::transcode(xmlch_request);
+				cout << "msg action type = " << msg.action_type << endl;
 			}
+			else {
+				cout << "error getting action type tag" << endl;
+			}
+		}
+		else {
+			cout << "error getting action type" << endl;
+		}
 
-		//}
+		// now process message
+		if (msg.msg_type.compare("Register") == 0) {
+			// handle "Register"
+			cout << "handling Register.." << endl;
+			assert (getUserInfo(requestElement, &msg.user) == (int) OK);
+			// now grab msg.user and do whatever processing of register
+		}
+		else if (msg.msg_type.compare("Login") == 0) {
+			// handle "Login"
+			cout << "handling Login.." << endl;
+			assert (getUserInfo(requestElement, &msg.user) == (int) OK);
+		}
 
-	}
+
+	} // end of try
 	catch (const XMLException& toCatch) {
 		char* message = XMLString::transcode(toCatch.getMessage());
 		cout << "Exception message is: \n"
@@ -310,9 +385,4 @@ fin:
 	XMLPlatformUtils::Terminate();
 
 	return 0;
-}
-
-void registerHandle( msg regmsg )
-{
-	
 }
