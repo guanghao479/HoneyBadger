@@ -311,3 +311,8 @@ fin:
 
 	return 0;
 }
+
+void registerHandle( msg regmsg )
+{
+	
+}
