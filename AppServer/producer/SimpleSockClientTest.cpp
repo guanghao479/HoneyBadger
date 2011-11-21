@@ -148,7 +148,7 @@ void requestLogin(std::string id, std::string passwd, std::string hostid) {
 	assert(impl != NULL);
 	myDoc = impl->createDocument(
 			0,                    // root element namespace URI.
-			X("HB_Message"),         // root element name (it doesn't like space in between)
+			X("HBMessage"),         // root element name (it doesn't like space in between)
 			0);
 
 	createLoginDoc(myDoc, id, passwd, hostid);
@@ -167,7 +167,7 @@ void new_register(std::string id, std::string passwd, std::string email) {
 	assert(impl != NULL);
 	myDoc = impl->createDocument(
 			0,                    // root element namespace URI.
-			X("HB_Message"),         // root element name (it doesn't like space in between)
+			X("HBMessage"),         // root element name (it doesn't like space in between)
 			0);
 
 	createRegisterDoc(myDoc, id, passwd, email);
@@ -228,13 +228,14 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email){
 
 		DOMElement* rootElem = doc->getDocumentElement();
 
-		DOMElement*  prodElem = doc->createElement(X("Type"));
+		DOMElement*  prodElem = doc->createElement(X("MessageType"));
 		rootElem->appendChild(prodElem);
 
 		prodElem->setAttribute(X("Name"), X("Register"));
 
-		DOMElement* nextElem = doc->createElement(X("Request"));
+		DOMElement* nextElem = doc->createElement(X("ActionType"));
 		prodElem->appendChild(nextElem);
+		nextElem->setAttribute(X("Name"), X("Request"));
 
 		DOMElement* userElem = doc->createElement(X("User"));
 		nextElem->appendChild(userElem);
@@ -300,13 +301,14 @@ void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid){
 
 		DOMElement* rootElem = doc->getDocumentElement();
 
-		DOMElement*  prodElem = doc->createElement(X("Type"));
+		DOMElement*  prodElem = doc->createElement(X("MessageType"));
 		rootElem->appendChild(prodElem);
 
 		prodElem->setAttribute(X("Name"), X("Login"));
 
-		DOMElement* nextElem = doc->createElement(X("Request"));
+		DOMElement* nextElem = doc->createElement(X("ActionType"));
 		prodElem->appendChild(nextElem);
+		nextElem->setAttribute(X("Name"), X("Request"));
 
 		DOMElement* userElem = doc->createElement(X("User"));
 		nextElem->appendChild(userElem);
