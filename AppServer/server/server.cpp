@@ -30,10 +30,15 @@
 using namespace std;
 using namespace xercesc;
 
-typedef struct msg_s {
-	string type;
+typedef struct user_info_s {
 	string uid;
 	string pw;
+} user_info;
+
+typedef struct msg_s {
+	user_info user;
+	string msg_type;
+	string action_type;
 } msg;
 
 int read_out_buffer(struct evbuffer* input, char** precord, uint32_t* precord_len) {
@@ -98,20 +103,39 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
 		const  XMLSize_t nodeCount = children->getLength();
 		cout <<" node count: " << nodeCount << endl;
 
-		for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
-			DOMNode* currentNode = children->item(xx);
-			if( currentNode->getNodeType() &&  // true is not NULL
-					currentNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-				DOMElement* currentElement
-					= dynamic_cast< xercesc::DOMElement* >( currentNode );
-				if( XMLString::equals(currentElement->getTagName(), X("Type"))) {
-					const XMLCh* xmlch_type = currentElement->getAttribute(X("Name"));
-					msg.type = XMLString::transcode(xmlch_type);
-					cout << "msg type name= " << msg.type << endl;
+		//for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
+			DOMNode* typeNode = children->item(1);
+			DOMElement* typeElement;
+			if( typeNode->getNodeType() &&  // true is not NULL
+					typeNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+				typeElement = dynamic_cast< xercesc::DOMElement* >( typeNode );
+				if( XMLString::equals(typeElement->getTagName(), X("MessageType"))) {
+					const XMLCh* xmlch_type = typeElement->getAttribute(X("Name"));
+					msg.msg_type = XMLString::transcode(xmlch_type);
+					cout << "msg type name= " << msg.msg_type << endl;
+				}
+			}
+			else {
+				printf("error getting type\n");
+			}
+
+			children = typeElement->getChildNodes();
+			DOMNode* requestNode = children->item(1);
+			DOMElement* requestElement;
+			if( requestNode->getNodeType() &&  // true is not NULL
+					requestNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+				requestElement = dynamic_cast< xercesc::DOMElement* >( requestNode );
+				if( XMLString::equals(requestElement->getTagName(), X("ActionType"))) {
+					const XMLCh* xmlch_request = requestElement->getAttribute(X("Name"));
+					msg.action_type = XMLString::transcode(xmlch_request);
+					cout << "msg action type = " << msg.request << endl;
+				}
+				else {
+					cout << "error getting request tag" << endl;
 				}
 			}
 
-		}
+		//}
 
 	}
 	catch (const XMLException& toCatch) {
