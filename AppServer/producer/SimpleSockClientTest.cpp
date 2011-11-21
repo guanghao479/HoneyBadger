@@ -14,50 +14,10 @@
 #include <string>
 
 #include "SimpleSockClient.h"
+#include "../common/XStr.cpp"
 
 using namespace std;
 using namespace xercesc;
-// ---------------------------------------------------------------------------
-//  This is a simple class that lets us do easy (though not terribly efficient)
-//  trancoding of char* data to XMLCh data.
-// ---------------------------------------------------------------------------
-class XStr
-{
-public :
-    // -----------------------------------------------------------------------
-    //  Constructors and Destructor
-    // -----------------------------------------------------------------------
-    XStr(const char* const toTranscode)
-    {
-        // Call the private transcoding method
-        fUnicodeForm = XMLString::transcode(toTranscode);
-    }
-
-    ~XStr()
-    {
-        XMLString::release(&fUnicodeForm);
-    }
-
-
-    // -----------------------------------------------------------------------
-    //  Getter methods
-    // -----------------------------------------------------------------------
-    const XMLCh* unicodeForm() const
-    {
-        return fUnicodeForm;
-    }
-
-private :
-    // -----------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fUnicodeForm
-    //      This is the Unicode XMLCh format of the string.
-    // -----------------------------------------------------------------------
-    XMLCh*   fUnicodeForm;
-};
-
-#define X(str) XStr(str).unicodeForm()
 
 char const* sHost = "127.0.0.1";
 int nPort         = kServerPort;
@@ -249,8 +209,11 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 		DOMElement* nextElem = doc->createElement(X("Request"));
 		prodElem->appendChild(nextElem);
 
+		DOMElement* userElem = doc->createElement(X("User"));
+		nextElem->appendChild(userElem);
+
 		DOMElement*  catElem = doc->createElement(X("uid"));
-		nextElem->appendChild(catElem);
+		userElem->appendChild(catElem);
 
 		//catElem->setAttribute(X("idea"), X("great"));
 
@@ -258,13 +221,13 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 		catElem->appendChild(catDataVal);
 
 		DOMElement*  devByElem = doc->createElement(X("passwd"));
-		nextElem->appendChild(devByElem);
+		userElem->appendChild(devByElem);
 
 		DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
 		devByElem->appendChild(devByDataVal);
 
 		DOMElement*  evaByElem = doc->createElement(X("email"));
-		nextElem->appendChild(evaByElem);
+		userElem->appendChild(evaByElem);
 
 		DOMText*  evaByDataVal = doc->createTextNode(X(email.c_str()));
 		evaByElem->appendChild(evaByDataVal);
