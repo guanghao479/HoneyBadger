@@ -34,6 +34,9 @@ void init_sync();
 void event_sync();
 void createRegisterDoc(DOMDocument* doc, string id, string pw, string email);
 void log_some_msgs(string msg, int len);
+void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl);
+void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid);
+void requestLogin(string, string, string);
 
 int main(int argc, char** argv) {
 	try {
@@ -52,6 +55,7 @@ int main(int argc, char** argv) {
 	log_without_connect();
 	log_some_msgs();
 	new_register("jfu", "123", "jfu@cs.rpi.edu");
+	requestLogin("jfu", "123", "1234567890");
 	dup_register();
 	valid_login();
 	invalid_login();
@@ -134,8 +138,27 @@ void log_some_msgs() {
 	total_passed ++;
 }
 
+void requestLogin(std::string id, std::string passwd, std::string hostid) {
 
-void new_register(std::string id, std::string passwd, std::string email) {
+	total_tests ++;
+	std::cout << std::endl << "====>" << std::endl;
+
+	DOMDocument*   myDoc;
+	DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+	assert(impl != NULL);
+	myDoc = impl->createDocument(
+			0,                    // root element namespace URI.
+			X("HB_Message"),         // root element name (it doesn't like space in between)
+			0);
+
+	createLoginDoc(myDoc, id, passwd, hostid);
+	writeOutDOM(myDoc, impl);
+
+	std::cout << "loginRequest(): id="<<id <<", passwd="<<passwd << std::endl;
+	total_passed++;
+}
+
+void new_register(std::string id, std::string passwd, std::string email) {	
 	total_tests ++;
 	std::cout << std::endl << "====>" << std::endl;
 
@@ -148,9 +171,15 @@ void new_register(std::string id, std::string passwd, std::string email) {
 			0);
 
 	createRegisterDoc(myDoc, id, passwd, email);
+	writeOutDOM(myDoc, impl);
+
+	std::cout << "new_register(): id="<<id <<", passwd="<<passwd << std::endl;
+	total_passed++;
+}
+
+void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl){
 
 	const XMLSize_t elementCount = myDoc->getElementsByTagName(X("*"))->getLength();
-
 	//impl          = DOMImplementationRegistry::getDOMImplementation(X("LS"));
 	DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
 	DOMConfiguration *theConfig = theSerializer->getDomConfig();
@@ -166,9 +195,7 @@ void new_register(std::string id, std::string passwd, std::string email) {
 
 	int msg_len = myFormTarget->getLen();
 	string output((char*)myFormTarget->getRawBuffer());
-	log_some_msgs(output, msg_len);
-	std::cout << "new_register(): id="<<id <<", passwd="<<passwd << std::endl;
-	total_passed++;
+	log_some_msgs(output, msg_len);	
 }
 
 
@@ -187,7 +214,7 @@ void init_sync() {
 void event_sync() {
 }
 
-void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
+void createRegisterDoc(DOMDocument* doc, string id, string pw, string email){
 	int errorCode = 0;
 
 	try
@@ -259,6 +286,77 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 
 }
 
+void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid){
+	int errorCode = 0;
+
+	try
+	{
+		/*
+			 doc = impl->createDocument(
+			 0,                    // root element namespace URI.
+			 X("company"),         // root element name
+			 0);                   // document type object (DTD).
+			 */
+
+		DOMElement* rootElem = doc->getDocumentElement();
+
+		DOMElement*  prodElem = doc->createElement(X("Type"));
+		rootElem->appendChild(prodElem);
+
+		prodElem->setAttribute(X("Name"), X("Login"));
+
+		DOMElement* nextElem = doc->createElement(X("Request"));
+		prodElem->appendChild(nextElem);
+
+		DOMElement* userElem = doc->createElement(X("User"));
+		nextElem->appendChild(userElem);
+
+		DOMElement*  catElem = doc->createElement(X("uid"));
+		userElem->appendChild(catElem);
+
+		//catElem->setAttribute(X("idea"), X("great"));
+
+		DOMText*    catDataVal = doc->createTextNode(X(id.c_str()));
+		catElem->appendChild(catDataVal);
+
+		DOMElement*  devByElem = doc->createElement(X("passwd"));
+		userElem->appendChild(devByElem);
+
+		DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
+		devByElem->appendChild(devByDataVal);
+
+		DOMElement*  evaByElem = doc->createElement(X("hostid"));
+		userElem->appendChild(evaByElem);
+
+		DOMText*  evaByDataVal = doc->createTextNode(X(hostid.c_str()));
+		evaByElem->appendChild(evaByDataVal);
+
+		//
+		// Now count the number of elements in the above DOM tree.
+		//
+
+		const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
+		cout << "The tree just created contains: " << elementCount << " elements." << endl;
+
+		//doc->release();
+	}
+	catch (const OutOfMemoryException&)
+	{
+		cerr << "OutOfMemoryException" << endl;
+		errorCode = 5;
+	}
+	catch (const DOMException& e)
+	{
+		cerr << "DOMException code is:  " << e.code << endl;
+		errorCode = 2;
+	}
+	catch (...)
+	{
+		cerr << "An error occurred creating the document" << endl;
+		errorCode = 3;
+	}
+
+}
 void log_some_msgs(string msg, int len) {
   //get a string to fire on wire
 	assert(len > 0);
