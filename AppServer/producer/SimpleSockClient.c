@@ -51,7 +51,7 @@ int hb_connect(char const* host, int port, hb_conn_t* client) {
   //set up timeout value
   struct timeval tmo;
   tmo.tv_sec = client->recv_tmo;
-	// the following two asserts fails on fz but works on my macbook
+  // the following two asserts fails on fz but works on my macbook
   //assert (setsockopt(client->sock, SOL_SOCKET, SO_RCVTIMEO, &tmo, sizeof(tmo)) == 0);
   tmo.tv_sec = client->send_tmo;
   //assert (setsockopt(client->sock, SOL_SOCKET, SO_SNDTIMEO, &tmo, sizeof(tmo)) == 0);
@@ -78,7 +78,7 @@ int hb_log(hb_conn_t* client, uint8_t* buf, int nbuf) {
     return NOT_READY;
   }
 
-	memset(client->sendBuf, 0, kSingleMsgSizeLimit);
+  memset(client->sendBuf, 0, kSingleMsgSizeLimit);
   //do framing
   frame_t len = nbuf;
   assert((nbuf+sizeof(len)) <= kSingleMsgSizeLimit);
@@ -92,7 +92,7 @@ int hb_log(hb_conn_t* client, uint8_t* buf, int nbuf) {
   }
   memcpy(&client->sendBuf[client->sendSize], buf, nbuf);
   client->sendSize += nbuf;
-	printd("hb_log(): buf=\n%s\n", &client->sendBuf[4]);
+  printd("hb_log(): buf=\n%s\n", &client->sendBuf[4]);
 
   if( send(client->sock, client->sendBuf, client->sendSize, 0)
       != client->sendSize ) {
@@ -101,12 +101,12 @@ int hb_log(hb_conn_t* client, uint8_t* buf, int nbuf) {
   }
 
   int totalBytesRcvd = 0, bytesRcvd;
-	int replyMsgMaxSize = 512; //TODO: need to properly define this
-	free(client->recvBuf);
-	client->recvBuf = (char*) malloc(replyMsgMaxSize);
-	memset(client->recvBuf, 0, replyMsgMaxSize);
+  int replyMsgMaxSize = 512; //TODO: need to properly define this
+  free(client->recvBuf);
+  client->recvBuf = (char*) malloc(replyMsgMaxSize);
+  memset(client->recvBuf, 0, replyMsgMaxSize);
   //while( totalBytesRcvd < 10)
-	{
+  {
     if((bytesRcvd = recv(client->sock, client->recvBuf, replyMsgMaxSize, 0)) <= 0) {
         printf("recv() got a problem\n");
         return RECV_FAIL;
@@ -114,8 +114,8 @@ int hb_log(hb_conn_t* client, uint8_t* buf, int nbuf) {
     totalBytesRcvd += bytesRcvd;
   }
 
-	printf("hb_log: sent %d bytes, received %d bytes: %s \n",
-					client->sendSize, totalBytesRcvd, client->recvBuf);
+  printf("hb_log: sent %d bytes, received %d bytes: %s \n",
+          client->sendSize, totalBytesRcvd, client->recvBuf);
 
   //check buffer correctness
   //if(strcmp(client->recvBuf, kAckStr) != 0) {

@@ -48,8 +48,8 @@
 #define kStrNextEvent "nextEvent"
 enum errorCode {
   OK = 0,
-	BAD_BUFFER,
-	BAD_XML,
+  BAD_BUFFER,
+  BAD_XML,
   MALFORMED_COMMENT,
   OUT_OF_MEMORY,
   HB_TRY_AGAIN,
