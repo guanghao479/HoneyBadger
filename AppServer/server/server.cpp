@@ -204,6 +204,7 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
       cout << "handling Register.." << endl;
       assert (getUserInfo(requestElement, &msg.user) == (int) OK);
       // now grab msg.user and do whatever processing of register
+      //
     }
     else if (msg.msg_type.compare("Login") == 0) {
       // handle "Login"
