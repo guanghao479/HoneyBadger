@@ -1,6 +1,6 @@
 name=server
 CC=g++
-LIBS = -levent -lxerces-c
+LIBS = -levent -levent_pthreads -lxerces-c -lpthread
 
 # --- targets
 all:   

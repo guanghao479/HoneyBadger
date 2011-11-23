@@ -1,6 +1,7 @@
 #include <event2/listener.h>
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
+#include <event2/thread.h>
 #include <arpa/inet.h>
 
 #include <xercesc/util/PlatformUtils.hpp>
@@ -358,6 +359,10 @@ main(int argc, char **argv)
     puts("Couldn't open event base");
     return 1;
   }
+
+  cout << "Server uses libevent version:\t " << event_get_version() << endl;
+  // Note this function needs to link with libevent as well as libevent_pthreads
+  cout << "Server libevent pthread support:\t " << ((evthread_use_pthreads()==1)?"ON":"OFF") << endl;
 
   /* Clear the sockaddr before using it, in case there are extra
    * platform-specific fields that can mess us up. */
