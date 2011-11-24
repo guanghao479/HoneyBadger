@@ -362,7 +362,7 @@ main(int argc, char **argv)
 
   cout << "Server uses libevent version:\t " << event_get_version() << endl;
   // Note this function needs to link with libevent as well as libevent_pthreads
-  cout << "Server libevent pthread support:\t " << ((evthread_use_pthreads()==1)?"ON":"OFF") << endl;
+  cout << "Server libevent pthread support:\t " << ((evthread_use_pthreads()==0)?"ON":"OFF") << endl;
 
   /* Clear the sockaddr before using it, in case there are extra
    * platform-specific fields that can mess us up. */
