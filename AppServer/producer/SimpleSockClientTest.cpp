@@ -122,7 +122,7 @@ void log_some_msgs() {
 
   //send kMsgNum messages synchronously
   int counter = 0;
-  while(counter < kMsgNum) {
+  while(counter < 3) {
     int err = hb_log(client, sendString, sendStringLen);
     assert(err == OK);
     counter++;

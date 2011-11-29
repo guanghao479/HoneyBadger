@@ -1,8 +1,13 @@
 #include <event2/listener.h>
 #include <event2/bufferevent.h>
+#include <event2/bufferevent_ssl.h>
 #include <event2/buffer.h>
 #include <event2/thread.h>
 #include <arpa/inet.h>
+
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/rand.h>
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XercesDefs.hpp>
@@ -17,6 +22,7 @@
 #include <xercesc/sax/HandlerBase.hpp>
 #include <xercesc/sax/InputSource.hpp>
 
+#include <pthread.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,11 +31,15 @@
 #include <errno.h>
 #include <iostream>
 
+#include "server.h"
 #include "../common/HBcommon.h"
 #include "../common/XStr.cpp"
 
 using namespace std;
 using namespace xercesc;
+
+pthread_t threads[1024];
+int conn_count = 0;
 
 typedef struct user_info_s {
   string uid;
@@ -254,6 +264,23 @@ done:
 echo_read_cb(struct bufferevent *bev, void *ctx)
 {
   printd("echo_read_cb():");
+
+  int fd = (int) bufferevent_getfd(bev);
+
+  cout << "now its fd=" << fd << endl;
+  // TODO: this is a quick hack, each thread is alloc'ed to do an event
+  // preferably make each therad handles each _active_ connections maybe?
+  int rc = pthread_create(&threads[fd], NULL, run_thread, (void *)bev);
+  if (rc){
+    printf("ERROR; return code from pthread_create() is %d\n", rc);
+    exit(-1);
+  }
+
+}
+
+void* run_thread(void* ctx) {
+  struct bufferevent *bev = (struct bufferevent*) ctx;
+
   struct evbuffer *input = bufferevent_get_input(bev);
   struct evbuffer *output = bufferevent_get_output(bev);
 
@@ -263,7 +290,6 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
   assert(read_out_buffer(input, &record, &record_len) == OK);
 
   // process this request
-  //string reply_str("REGISTER_OK");
   string reply_str;
 
   ErrorCode ret = (ErrorCode) process_request(record, record_len, &reply_str);
@@ -277,6 +303,8 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
   }
 
   free(record);
+
+  pthread_exit(NULL);
 }
 
   static void
@@ -288,6 +316,7 @@ echo_write_cb(struct bufferevent *bev, void *ctx)
 echo_event_cb(struct bufferevent *bev, short events, void *ctx)
 {
   printd("echo_event_cb():");
+
   if (events & BEV_EVENT_ERROR)
     perror("Error from bufferevent");
   if (events & (BEV_EVENT_EOF | BEV_EVENT_ERROR)) {
@@ -302,17 +331,32 @@ accept_conn_cb(struct evconnlistener *listener,
     void *ctx)
 {
   cout << "accept_conn_cb(): fd=" << fd <<", "<< "socklen="<<socklen
-                             << endl;
+                             << ", conn_count=" << conn_count++ << endl;
   /* We got a new connection! Set up a bufferevent for it. */
   struct event_base *base = evconnlistener_get_base(listener);
   struct bufferevent *bev = bufferevent_socket_new(
-      base, fd, BEV_OPT_CLOSE_ON_FREE); // TODO: can't make it thread-safe(thread support not active?)
+      base, fd, BEV_OPT_CLOSE_ON_FREE|BEV_OPT_THREADSAFE); // so that we can pass it to another thread
   assert(bev != NULL);
+
+  /*
+  int rc = pthread_create(&threads[conn_count++], NULL, processBev, (void *)bev);
+  if (rc){
+    printf("ERROR; return code from pthread_create() is %d\n", rc);
+    exit(-1);
+  }
+  */
 
   bufferevent_setcb(bev, echo_read_cb, echo_write_cb, echo_event_cb, NULL);
   bufferevent_enable(bev, EV_READ|EV_WRITE);
+
+  cout << "end of accept_conn_cb()" << endl;
 }
 
+void* processBev(void* ctx) {
+  struct bufferevent *bev = (struct bufferevent *) ctx;
+  bufferevent_setcb(bev, echo_read_cb, echo_write_cb, echo_event_cb, NULL);
+  bufferevent_enable(bev, EV_READ|EV_WRITE);
+}
   static void
 accept_error_cb(struct evconnlistener *listener, void *ctx)
 {
@@ -340,8 +384,10 @@ main(int argc, char **argv)
     return 1;
   }
 
+  //pthread_t thread1;
   struct event_base *base;
   struct evconnlistener *listener;
+  SSL_CTX* ctx; // TODO: to add secure transport layer
   struct sockaddr_in sin;
 
   int port = kServerPort;
@@ -385,6 +431,8 @@ main(int argc, char **argv)
   evconnlistener_set_error_cb(listener, accept_error_cb);
 
   event_base_dispatch(base);
+
+  evconnlistener_free(listener);
 
   // need to terminate xerces-c stuff too
 fin:
