@@ -9,6 +9,8 @@
 #include <openssl/err.h>
 #include <openssl/rand.h>
 
+#include <glog/logging.h>
+
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/dom/DOM.hpp>
@@ -57,14 +59,14 @@ typedef struct msg_s {
 int read_out_buffer(struct evbuffer* input, char** precord, uint32_t* precord_len) {
   size_t buffer_len = evbuffer_get_length(input);
   if(buffer_len < sizeof(frame_t)) {
-    printd("Warning: now buffer_len=%d, The size field hasn't arrived yet\n", buffer_len);
+    LOG(WARNING) << "Warning: now buffer_len=" << buffer_len << ", The size field hasn't arrived yet";
     return BAD_BUFFER;
   };
 
   uint32_t record_len; // TODO: endianess?
   evbuffer_copyout(input, &record_len, sizeof(uint32_t));
   if(buffer_len < record_len + 4) {
-    printd("Warning: The record hasn't arrived\n");
+    LOG(WARNING) << "Warning: The record hasn't arrived";
     return BAD_BUFFER;
   }
 
@@ -122,12 +124,12 @@ int getUserInfo(DOMElement* requestElement, user_info* user) {
       }
     }
     else {
-      cout << "error getting user tag" << endl;
+      LOG(ERROR) << "error getting user tag";
             return BAD_XML;
     }
   }
   else {
-    cout << "error getting user type" << endl;
+    LOG(ERROR) << "error getting user type";
     return BAD_XML;
   }
 
@@ -138,10 +140,9 @@ int getUserInfo(DOMElement* requestElement, user_info* user) {
 }
 
 // interpret and process this request in record string
-// TODO: process it
 int process_request(char* record, uint32_t record_len, string* reply_str) {
   ErrorCode ret;
-  printd("process_request(): record=%s, length=%d", record, record_len);
+  LOG(INFO) << "process_request(): record="<<record << ", length="<< record_len;
 
   // get a parser first
   XercesDOMParser* parser = new XercesDOMParser();
@@ -226,7 +227,7 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
   } // end of try
   catch (const XMLException& toCatch) {
     char* message = XMLString::transcode(toCatch.getMessage());
-    cout << "Exception message is: \n"
+    LOG(ERROR) << "Exception message is: \n"
       << message << "\n";
     XMLString::release(&message);
     ret = BAD_XML;
@@ -234,14 +235,14 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
   }
   catch (const DOMException& toCatch) {
     char* message = XMLString::transcode(toCatch.msg);
-    cout << "Exception message is: \n"
+    LOG(ERROR) << "Exception message is: \n"
       << message << "\n";
     XMLString::release(&message);
     ret = BAD_XML;
     goto done;
   }
   catch (...) {
-    cout << "Unexpected Exception \n" ;
+    LOG(ERROR) << "Unexpected Exception \n" ;
     ret = BAD_XML;
     goto done;
   }
@@ -262,11 +263,11 @@ done:
   static void
 echo_read_cb(struct bufferevent *bev, void *ctx)
 {
-  printd("echo_read_cb():");
+  LOG(INFO) << ("echo_read_cb():");
 
   int fd = (int) bufferevent_getfd(bev);
 
-  //cout << "now its fd=" << fd << endl;
+  LOG(INFO) << "now its fd=" << fd ;
   // TODO: this is a quick hack, each thread is alloc'ed to do an event.
   //       preferably make each therad handles each _active_ connections maybe?
   int rc = pthread_create(&threads[fd], NULL, run_thread, (void *)bev);
@@ -308,18 +309,18 @@ void* run_thread(void* ctx) {
   static void
 echo_write_cb(struct bufferevent *bev, void *ctx)
 {
-  std::cout << "echo_write_cb()" << std::endl;
+   LOG(INFO) << "echo_write_cb()" ;
 }
   static void
 echo_event_cb(struct bufferevent *bev, short events, void *ctx)
 {
-  printd("echo_event_cb():");
+  LOG(INFO) << ("echo_event_cb():");
 
   if (events & BEV_EVENT_ERROR)
     perror("Error from bufferevent");
   if (events & (BEV_EVENT_EOF | BEV_EVENT_ERROR)) {
     bufferevent_free(bev);
-    printf("buffer event freed\n");
+    LOG(INFO) << "buffer event freed";
   }
 }
 
@@ -328,7 +329,7 @@ accept_conn_cb(struct evconnlistener *listener,
     evutil_socket_t fd, struct sockaddr *address, int socklen,
     void *ctx)
 {
-  cout << "accept_conn_cb(): fd=" << fd <<", "<< "socklen="<<socklen
+  LOG(INFO) << "accept_conn_cb(): fd=" << fd <<", "<< "socklen="<<socklen
                              << ", conn_count=" << conn_count++ << endl;
 
   /* We got a new connection! Set up a bufferevent for it. */
@@ -340,7 +341,7 @@ accept_conn_cb(struct evconnlistener *listener,
   bufferevent_setcb(bev, echo_read_cb, echo_write_cb, echo_event_cb, NULL);
   bufferevent_enable(bev, EV_READ|EV_WRITE);
 
-  cout << "end of accept_conn_cb()" << endl;
+  LOG(INFO) << "end of accept_conn_cb()" << endl;
 }
 
   static void
@@ -357,6 +358,9 @@ accept_error_cb(struct evconnlistener *listener, void *ctx)
   int
 main(int argc, char **argv)
 {
+  // Initialize Google's logging library.
+  google::InitGoogleLogging(argv[0]);
+
   // to init xerces-c lib stuff
   try {
     XMLPlatformUtils::Initialize();
@@ -391,9 +395,14 @@ main(int argc, char **argv)
     return 1;
   }
 
+  cout << "===============================================" << endl;
+  // Check libevent version
   cout << "Server uses libevent version:\t " << event_get_version() << endl;
   // Note this function needs to link with libevent as well as libevent_pthreads
   cout << "Server libevent pthread support:\t " << ((evthread_use_pthreads()==0)?"ON":"OFF") << endl;
+  // see http://google-glog.googlecode.com/svn/trunk/doc/glog.html for details
+  cout << "Server is using glog, log path is /tmp/HB_log/" << endl;
+  cout << "===============================================" << endl;
 
   /* Clear the sockaddr before using it, in case there are extra
    * platform-specific fields that can mess us up. */

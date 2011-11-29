@@ -92,7 +92,7 @@ int hb_log(hb_conn_t* client, uint8_t* buf, int nbuf) {
   }
   memcpy(&client->sendBuf[client->sendSize], buf, nbuf);
   client->sendSize += nbuf;
-  printd("hb_log(): buf=\n%s\n", &client->sendBuf[4]);
+  //printd("hb_log(): buf=\n%s\n", &client->sendBuf[4]);
 
   if( send(client->sock, client->sendBuf, client->sendSize, 0)
       != client->sendSize ) {
