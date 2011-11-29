@@ -1,0 +1,29 @@
+说明：(1)-(8)单个文件，(9)-(16)文件夹同时包括子文件
+(1)-(16)都没有考虑覆盖，(17)-(20)是覆盖情况
+      
+（1）新建文件： 文件的createdFile事件、文件父目录的Changed事件
+（2）删除文件： 文件的deletedFile事件、文件父目录的Changed事件
+（3）监控文件夹下的文件剪切： 原文件的deletedFile事件，新文件的createdFile事件、新位置父目录的changed事件、
+原位置父目录的Changed事件
+（4）监控文件夹下的文件复制： 文件的CreatedFile事件、父目录的changed、文件的Changed
+（5）监控外剪切文件到监控内： 同（1）
+（6）监控内剪切文件到监控外： 同（2）
+（7）监控外复制文件到监控内： 同（4）
+（8）监控内复制文件到监控外：无变化 
+
+（9）监控文件夹下文件夹剪切： 原文件夹的DeletedFile事件、新文件夹createFile事件、新父目录的changed、原位置父目录的Changed事件、
+子文件没有产生任何事件
+（10）监控文件夹下文件夹复制：文件夹createdFile事件、父目录changed、文件夹changed、子文件createdFile、
+文件夹changed、文件Changed
+（11）从监控外剪切文件夹到监控内（不同盘符）：文件夹的createdFile事件、父目录的changed事件、文件夹的changed事件、文件的createdFile事件、
+     文件夹changed事件，文件的changed事件
+（12）从监控外剪切文件夹到监控内（同一个盘符）：文件夹的createFile事件、父目录的Changed事件、子文件没有产生任何事件
+（13）从监控内剪切文件夹到监控外(同一盘符)：文件夹deletedFile事件、父目录的changed事件、子文件没产生事件
+（14）从监控内剪切文件夹到监控外(不同盘符)：文件DeleteFile事件、文件夹deletedFile事件、父目录的changed事件
+（15）从监控外复制文件夹到监控内：同（10）
+（16）从监控内复制文件夹到监控外：无变化
+
+（17）文件剪切覆盖：文件changed、父目录Changed
+（18）文件复制覆盖：文件changed、文件Changed
+（19）文件夹剪切覆盖：文件夹没变化、新文件事件同（1）、相同文件同（17）
+（20）文件夹复制覆盖：文件夹没变化、新文件事件同（4）、相同文件同（18）
