@@ -1,0 +1,3 @@
+rollsum.lo rollsum.o: rollsum.c rollsum.h
+
+rollsum.h:

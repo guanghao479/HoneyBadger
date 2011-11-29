@@ -1,0 +1,137 @@
+\hypertarget{structrs__stats}{
+\subsection{rs\_\-stats Struct Reference}
+\label{structrs__stats}\index{rs\_\-stats@{rs\_\-stats}}
+}
+Performance statistics from a librsync encoding or decoding operation.  
+
+
+\subsubsection*{Data Fields}
+\begin{CompactItemize}
+\item 
+char const $\ast$ \hyperlink{structrs__stats_7bea565f5d1687eb6b953b518034d43c}{op}
+\begin{CompactList}\small\item\em Human-readable name of current operation. \item\end{CompactList}\item 
+int \hyperlink{structrs__stats_0126775feaafac1539f519ac56346713}{lit\_\-cmds}
+\begin{CompactList}\small\item\em Number of literal commands. \item\end{CompactList}\item 
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \hyperlink{structrs__stats_f21a0846d6bafd18f6f592862808fac4}{lit\_\-bytes}
+\begin{CompactList}\small\item\em Number of literal bytes. \item\end{CompactList}\item 
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \hyperlink{structrs__stats_30dfcfe89000e028ca4054c8501879fc}{lit\_\-cmdbytes}
+\begin{CompactList}\small\item\em Number of bytes used in literal command headers. \item\end{CompactList}\item 
+\hypertarget{structrs__stats_6ade0b71046b937d5caa10247842fe54}{
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \textbf{copy\_\-cmds}}
+\label{structrs__stats_6ade0b71046b937d5caa10247842fe54}
+
+\item 
+\hypertarget{structrs__stats_9b21056da59babbb2821136da124062d}{
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \textbf{copy\_\-bytes}}
+\label{structrs__stats_9b21056da59babbb2821136da124062d}
+
+\item 
+\hypertarget{structrs__stats_dff5dde5dffc6a43920ca6c7efb28ab7}{
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \textbf{copy\_\-cmdbytes}}
+\label{structrs__stats_dff5dde5dffc6a43920ca6c7efb28ab7}
+
+\item 
+\hypertarget{structrs__stats_e0089977b2e626379ace74995402f771}{
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \textbf{sig\_\-cmds}}
+\label{structrs__stats_e0089977b2e626379ace74995402f771}
+
+\item 
+\hypertarget{structrs__stats_cc808480deca2206d1e619ae1915a3a2}{
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \textbf{sig\_\-bytes}}
+\label{structrs__stats_cc808480deca2206d1e619ae1915a3a2}
+
+\item 
+\hypertarget{structrs__stats_6c77fd7f630fcd027c80a73cfb8a1d8c}{
+int \textbf{false\_\-matches}}
+\label{structrs__stats_6c77fd7f630fcd027c80a73cfb8a1d8c}
+
+\item 
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \hyperlink{structrs__stats_cacc5f67f9babdefed46bf12473c985f}{sig\_\-blocks}
+\begin{CompactList}\small\item\em Number of blocks described by the signature. \item\end{CompactList}\item 
+\hypertarget{structrs__stats_c55f8f367cb710aeb7bb890460b7b91c}{
+size\_\-t \textbf{block\_\-len}}
+\label{structrs__stats_c55f8f367cb710aeb7bb890460b7b91c}
+
+\item 
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \hyperlink{structrs__stats_fc6c46001cdce8922e443946c4151051}{in\_\-bytes}
+\begin{CompactList}\small\item\em Total bytes read from input. \item\end{CompactList}\item 
+\hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} \hyperlink{structrs__stats_ce1905d4a0a8d1dfd76a94051afbe571}{out\_\-bytes}
+\begin{CompactList}\small\item\em Total bytes written to output. \item\end{CompactList}\end{CompactItemize}
+
+
+\subsubsection{Detailed Description}
+Performance statistics from a librsync encoding or decoding operation. 
+
+\begin{Desc}
+\item[See also:]\hyperlink{librsync_8h_cca80c2890032283d93dc7abf02aec6f}{rs\_\-format\_\-stats()}, rs\_\-log\_\-stats() \end{Desc}
+
+
+\subsubsection{Field Documentation}
+\hypertarget{structrs__stats_7bea565f5d1687eb6b953b518034d43c}{
+\index{rs\_\-stats@{rs\_\-stats}!op@{op}}
+\index{op@{op}!rs_stats@{rs\_\-stats}}
+\paragraph[op]{\setlength{\rightskip}{0pt plus 5cm}char const$\ast$ {\bf rs\_\-stats::op}}\hfill}
+\label{structrs__stats_7bea565f5d1687eb6b953b518034d43c}
+
+
+Human-readable name of current operation. 
+
+For example, \char`\"{}delta\char`\"{}. \hypertarget{structrs__stats_0126775feaafac1539f519ac56346713}{
+\index{rs\_\-stats@{rs\_\-stats}!lit\_\-cmds@{lit\_\-cmds}}
+\index{lit\_\-cmds@{lit\_\-cmds}!rs_stats@{rs\_\-stats}}
+\paragraph[lit\_\-cmds]{\setlength{\rightskip}{0pt plus 5cm}int {\bf rs\_\-stats::lit\_\-cmds}}\hfill}
+\label{structrs__stats_0126775feaafac1539f519ac56346713}
+
+
+Number of literal commands. 
+
+\hypertarget{structrs__stats_f21a0846d6bafd18f6f592862808fac4}{
+\index{rs\_\-stats@{rs\_\-stats}!lit\_\-bytes@{lit\_\-bytes}}
+\index{lit\_\-bytes@{lit\_\-bytes}!rs_stats@{rs\_\-stats}}
+\paragraph[lit\_\-bytes]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-long\_\-t} {\bf rs\_\-stats::lit\_\-bytes}}\hfill}
+\label{structrs__stats_f21a0846d6bafd18f6f592862808fac4}
+
+
+Number of literal bytes. 
+
+\hypertarget{structrs__stats_30dfcfe89000e028ca4054c8501879fc}{
+\index{rs\_\-stats@{rs\_\-stats}!lit\_\-cmdbytes@{lit\_\-cmdbytes}}
+\index{lit\_\-cmdbytes@{lit\_\-cmdbytes}!rs_stats@{rs\_\-stats}}
+\paragraph[lit\_\-cmdbytes]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-long\_\-t} {\bf rs\_\-stats::lit\_\-cmdbytes}}\hfill}
+\label{structrs__stats_30dfcfe89000e028ca4054c8501879fc}
+
+
+Number of bytes used in literal command headers. 
+
+\hypertarget{structrs__stats_cacc5f67f9babdefed46bf12473c985f}{
+\index{rs\_\-stats@{rs\_\-stats}!sig\_\-blocks@{sig\_\-blocks}}
+\index{sig\_\-blocks@{sig\_\-blocks}!rs_stats@{rs\_\-stats}}
+\paragraph[sig\_\-blocks]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-long\_\-t} {\bf rs\_\-stats::sig\_\-blocks}}\hfill}
+\label{structrs__stats_cacc5f67f9babdefed46bf12473c985f}
+
+
+Number of blocks described by the signature. 
+
+\hypertarget{structrs__stats_fc6c46001cdce8922e443946c4151051}{
+\index{rs\_\-stats@{rs\_\-stats}!in\_\-bytes@{in\_\-bytes}}
+\index{in\_\-bytes@{in\_\-bytes}!rs_stats@{rs\_\-stats}}
+\paragraph[in\_\-bytes]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-long\_\-t} {\bf rs\_\-stats::in\_\-bytes}}\hfill}
+\label{structrs__stats_fc6c46001cdce8922e443946c4151051}
+
+
+Total bytes read from input. 
+
+\hypertarget{structrs__stats_ce1905d4a0a8d1dfd76a94051afbe571}{
+\index{rs\_\-stats@{rs\_\-stats}!out\_\-bytes@{out\_\-bytes}}
+\index{out\_\-bytes@{out\_\-bytes}!rs_stats@{rs\_\-stats}}
+\paragraph[out\_\-bytes]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-long\_\-t} {\bf rs\_\-stats::out\_\-bytes}}\hfill}
+\label{structrs__stats_ce1905d4a0a8d1dfd76a94051afbe571}
+
+
+Total bytes written to output. 
+
+
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{librsync_8h}{librsync.h}\end{CompactItemize}

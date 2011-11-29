@@ -1,0 +1,29 @@
+\hypertarget{librsync-config_8h}{
+\subsection{librsync-config.h File Reference}
+\label{librsync-config_8h}\index{librsync-config.h@{librsync-config.h}}
+}
+System-specific configuration for \hyperlink{librsync_8h}{librsync.h}. 
+
+\subsubsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef long long \hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t}
+\begin{CompactList}\small\item\em A long integer type that can handle the largest file offsets. \item\end{CompactList}\end{CompactItemize}
+
+
+\subsubsection{Detailed Description}
+System-specific configuration for \hyperlink{librsync_8h}{librsync.h}. 
+
+
+
+\subsubsection{Typedef Documentation}
+\hypertarget{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{
+\index{librsync-config.h@{librsync-config.h}!rs\_\-long\_\-t@{rs\_\-long\_\-t}}
+\index{rs\_\-long\_\-t@{rs\_\-long\_\-t}!librsync-config.h@{librsync-config.h}}
+\paragraph[rs\_\-long\_\-t]{\setlength{\rightskip}{0pt plus 5cm}typedef long long {\bf rs\_\-long\_\-t}}\hfill}
+\label{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}
+
+
+A long integer type that can handle the largest file offsets. 
+
+Perhaps this might have to be configured to be 'long long', 'long', or something else depending on the platform. On WIN32, many config.h's define LONG\_\-LONG as \char`\"{}\_\-\_\-int64\char`\"{}. 

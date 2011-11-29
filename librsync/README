@@ -1,0 +1,19 @@
+/**
+*  对指定的old_file生成签名文件sig_file
+*/
+rs_result rs_sig_file(FILE *old_file, FILE *sig_file, size_t block_len, size_t strong_len, rs_stats_t *); 
+
+/**
+* 将签名文件载入FILE载入签名结构rs_signature_t
+*/
+rs_result rs_loadsig_file(FILE *, rs_signature_t **, rs_stats_t *);
+
+/**
+* 利用签名结构rs_signature_t，计算其和new_file的差异，并输出差量文件delta_file
+*/
+rs_result rs_delta_file(rs_signature_t *, FILE *new_file, FILE *delta_file, rs_stats_t *);
+
+/**
+* 利用delta_file，对basis_file进行补丁，生成new_file
+*/
+rs_result rs_patch_file(FILE *basis_file, FILE *delta_file, FILE *new_file, rs_stats_t *);

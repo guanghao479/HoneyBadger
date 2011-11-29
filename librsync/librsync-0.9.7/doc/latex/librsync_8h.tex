@@ -1,0 +1,783 @@
+\hypertarget{librsync_8h}{
+\subsection{librsync.h File Reference}
+\label{librsync_8h}\index{librsync.h@{librsync.h}}
+}
+Main public interface to librsync. 
+
+\subsubsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \hyperlink{structrs__stats}{rs\_\-stats}
+\begin{CompactList}\small\item\em Performance statistics from a librsync encoding or decoding operation. \item\end{CompactList}\item 
+struct \hyperlink{structrs__buffers__s}{rs\_\-buffers\_\-s}
+\begin{CompactList}\small\item\em Stream through which the calling application feeds data to and from the library. \item\end{CompactList}\end{CompactItemize}
+\subsubsection*{Defines}
+\begin{CompactItemize}
+\item 
+\hypertarget{librsync_8h_404f8aff7b4de181cc950ebadbdc9137}{
+\#define \textbf{RS\_\-MD4\_\-LENGTH}~16}
+\label{librsync_8h_404f8aff7b4de181cc950ebadbdc9137}
+
+\item 
+\#define \hyperlink{librsync_8h_a6da4217f6c7ef24c4e7529f1d528d4d}{RS\_\-DEFAULT\_\-STRONG\_\-LEN}~8
+\begin{CompactList}\small\item\em Default length of strong signatures, in bytes. \item\end{CompactList}\item 
+\#define \hyperlink{librsync_8h_93340842ff428fa0c834461121bc96f9}{RS\_\-DEFAULT\_\-BLOCK\_\-LEN}~2048
+\begin{CompactList}\small\item\em Default block length, if not determined by any other factors. \item\end{CompactList}\end{CompactItemize}
+\subsubsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef void \hyperlink{librsync_8h_69d928f89dbf5e0df5da101a15ac28b5}{rs\_\-trace\_\-fn\_\-t} (int level, char const $\ast$msg)
+\begin{CompactList}\small\item\em Callback to write out log messages. \item\end{CompactList}\item 
+typedef struct \hyperlink{structrs__stats}{rs\_\-stats} \hyperlink{librsync_8h_03dc177b86ff104157b5410afd12de5b}{rs\_\-stats\_\-t}
+\begin{CompactList}\small\item\em Performance statistics from a librsync encoding or decoding operation. \item\end{CompactList}\item 
+typedef struct rs\_\-mdfour \hyperlink{librsync_8h_d9f85c111de98634e6a28523a266c3df}{rs\_\-mdfour\_\-t}
+\begin{CompactList}\small\item\em MD4 message-digest accumulator. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_47fc8f5420a15ce91c13457d1522ad3c}{
+typedef unsigned int \textbf{rs\_\-weak\_\-sum\_\-t}}
+\label{librsync_8h_47fc8f5420a15ce91c13457d1522ad3c}
+
+\item 
+\hypertarget{librsync_8h_4d9d32def7f72f51a4702a7d2eb30118}{
+typedef unsigned char \textbf{rs\_\-strong\_\-sum\_\-t} \mbox{[}RS\_\-MD4\_\-LENGTH\mbox{]}}
+\label{librsync_8h_4d9d32def7f72f51a4702a7d2eb30118}
+
+\item 
+\hypertarget{librsync_8h_fb2a9cb505daeb8e519d06686f5caabf}{
+typedef struct rs\_\-signature \textbf{rs\_\-signature\_\-t}}
+\label{librsync_8h_fb2a9cb505daeb8e519d06686f5caabf}
+
+\item 
+typedef struct \hyperlink{structrs__buffers__s}{rs\_\-buffers\_\-s} \hyperlink{librsync_8h_bf9f543dbfe5c1e60c8ed1c93d087767}{rs\_\-buffers\_\-t}
+\begin{CompactList}\small\item\em Stream through which the calling application feeds data to and from the library. \item\end{CompactList}\item 
+typedef struct rs\_\-job \hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t}
+\begin{CompactList}\small\item\em Job of work to be done. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_e06d064f9f33a459a589d2eb1fb5b6bc}{
+typedef \hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \textbf{rs\_\-driven\_\-cb} (\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$job, \hyperlink{structrs__buffers__s}{rs\_\-buffers\_\-t} $\ast$buf, void $\ast$opaque)}
+\label{librsync_8h_e06d064f9f33a459a589d2eb1fb5b6bc}
+
+\item 
+typedef \hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \hyperlink{librsync_8h_fc4bc64a627d7ca181a7e813832313cc}{rs\_\-copy\_\-cb} (void $\ast$opaque, \hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} pos, size\_\-t $\ast$len, void $\ast$$\ast$buf)
+\begin{CompactList}\small\item\em Callback used to retrieve parts of the basis file. \item\end{CompactList}\end{CompactItemize}
+\subsubsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff}{rs\_\-loglevel} \{ \par
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff02061035a01b5ef687e246b60984e125}{RS\_\-LOG\_\-EMERG} =  0, 
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffacb3b9720c32deecc167c3a4fa0ce7db}{RS\_\-LOG\_\-ALERT} =  1, 
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffbb9fce001c260b228f18ef413246747d}{RS\_\-LOG\_\-CRIT} =  2, 
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff3be8f6c4bc775d06b990f1c30b3fba42}{RS\_\-LOG\_\-ERR} =  3, 
+\par
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffaad731f1e5bdf374e40d486ace54e21a}{RS\_\-LOG\_\-WARNING} =  4, 
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff8f2b32b0048544f4c9694b7b150221d8}{RS\_\-LOG\_\-NOTICE} =  5, 
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126fff67a230a41302584eb67b9c7ccec3f62}{RS\_\-LOG\_\-INFO} =  6, 
+\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff1527bfcd19a3e2ffcf14d8c80e32b4c6}{RS\_\-LOG\_\-DEBUG} =  7
+ \}
+\begin{CompactList}\small\item\em Log severity levels. \item\end{CompactList}\item 
+enum \hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \{ \par
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253739063053a289b5c3393d78cc77b41b2}{RS\_\-DONE} =  0, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253f2d289bbc65678b4b00f56a2e6632957}{RS\_\-BLOCKED} =  1, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be1082535366e53561c2ec9a897470535ea0139c}{RS\_\-RUNNING} =  2, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253130fc0bdeb6ce6ed496f07a02146f0a5}{RS\_\-TEST\_\-SKIPPED} =  77, 
+\par
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253f510cfd1ede72dbfea416d3f295e6c6f}{RS\_\-IO\_\-ERROR} =  100, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253c562bd33fecdc9ab03d32c2471f1bdc9}{RS\_\-SYNTAX\_\-ERROR} =  101, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253403296529c4ba1653612438dd7ba9a34}{RS\_\-MEM\_\-ERROR} =  102, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253a997432dc2d2c8256ad41f96267a5185}{RS\_\-INPUT\_\-ENDED} =  103, 
+\par
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253da22c2fc95695e6f9558da6bcca53749}{RS\_\-BAD\_\-MAGIC} =  104, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253639e01179ce01c707606a8e50bf5a6aa}{RS\_\-UNIMPLEMENTED} =  105, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253897ee702e0324d286881f6b8391ea340}{RS\_\-CORRUPT} =  106, 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253de41976437317deebdec5b27f7b39655}{RS\_\-INTERNAL\_\-ERROR} =  107, 
+\par
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be10825388f1810d792cd6fdb7d9cd866a5fd834}{RS\_\-PARAM\_\-ERROR} =  108
+ \}
+\begin{CompactList}\small\item\em Return codes from nonblocking rsync operations. \item\end{CompactList}\item 
+enum \hyperlink{librsync_8h_e631f0b26e2ccc890639ba50bf9048d5}{rs\_\-work\_\-options} \{ \hyperlink{librsync_8h_e631f0b26e2ccc890639ba50bf9048d5b9999fda414b40983edf3076f7224029}{RS\_\-END} =  0x01
+ \}
+\begin{CompactList}\small\item\em Bitmask values that may be passed to the options parameter of rs\_\-work(). \item\end{CompactList}\end{CompactItemize}
+\subsubsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{librsync_8h_f4aebb30b6047b82bdca09c3a410a389}{rs\_\-trace\_\-set\_\-level} (\hyperlink{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff}{rs\_\-loglevel} level)
+\begin{CompactList}\small\item\em Set the least important message severity that will be output. \item\end{CompactList}\item 
+void \hyperlink{librsync_8h_c41a6f21adb5c2f1e085550b84136f19}{rs\_\-trace\_\-to} (\hyperlink{librsync_8h_69d928f89dbf5e0df5da101a15ac28b5}{rs\_\-trace\_\-fn\_\-t} $\ast$)
+\begin{CompactList}\small\item\em Set trace callback. \item\end{CompactList}\item 
+void \hyperlink{librsync_8h_3948b0278705b506279d41886f8f6ef4}{rs\_\-trace\_\-stderr} (int level, char const $\ast$msg)
+\begin{CompactList}\small\item\em Default trace callback that writes to stderr. \item\end{CompactList}\item 
+int \hyperlink{librsync_8h_a5629150519b756abcd7b30fa411072f}{rs\_\-supports\_\-trace} (void)
+\begin{CompactList}\small\item\em Check whether the library was compiled with debugging trace suport. \item\end{CompactList}\item 
+void \hyperlink{librsync_8h_62fe2ab9307b2e81bd8a823efbd1e23b}{rs\_\-hexify} (char $\ast$to\_\-buf, void const $\ast$from\_\-buf, int from\_\-len)
+\begin{CompactList}\small\item\em Convert FROM\_\-LEN bytes at FROM\_\-BUF into a hex representation in TO\_\-BUF, which must be twice as long plus one byte for the null terminator. \item\end{CompactList}\item 
+size\_\-t \hyperlink{librsync_8h_528cf29c12e534487f5b905d861c68ab}{rs\_\-unbase64} (char $\ast$s)
+\begin{CompactList}\small\item\em Decode a base64 buffer in place. \item\end{CompactList}\item 
+void \hyperlink{librsync_8h_b1a719860d8f821262f730152de37339}{rs\_\-base64} (unsigned char const $\ast$buf, int n, char $\ast$out)
+\begin{CompactList}\small\item\em Encode a buffer as base64. \item\end{CompactList}\item 
+char const $\ast$ \hyperlink{librsync_8h_1837f4992820b16914306fd070f0ac4f}{rs\_\-strerror} (\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} r)
+\begin{CompactList}\small\item\em Return an English description of a \hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} value. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_e4b3349e1006c85f4fe1764fcd33103c}{
+void \textbf{rs\_\-mdfour} (unsigned char $\ast$out, void const $\ast$in, size\_\-t)}
+\label{librsync_8h_e4b3349e1006c85f4fe1764fcd33103c}
+
+\item 
+\hypertarget{librsync_8h_c3e85a06be98477af54d7cebbe566eb3}{
+void \textbf{rs\_\-mdfour\_\-begin} (\hyperlink{librsync_8h_d9f85c111de98634e6a28523a266c3df}{rs\_\-mdfour\_\-t} $\ast$md)}
+\label{librsync_8h_c3e85a06be98477af54d7cebbe566eb3}
+
+\item 
+void \hyperlink{librsync_8h_ad9c101b8cb696df9884e3c12cc8e267}{rs\_\-mdfour\_\-update} (\hyperlink{librsync_8h_d9f85c111de98634e6a28523a266c3df}{rs\_\-mdfour\_\-t} $\ast$md, void const $\ast$, size\_\-t n)
+\begin{CompactList}\small\item\em Feed some data into the MD4 accumulator. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_7c2ffe0d8ffa13e23c68f9b4c054511b}{
+void \textbf{rs\_\-mdfour\_\-result} (\hyperlink{librsync_8h_d9f85c111de98634e6a28523a266c3df}{rs\_\-mdfour\_\-t} $\ast$md, unsigned char $\ast$out)}
+\label{librsync_8h_7c2ffe0d8ffa13e23c68f9b4c054511b}
+
+\item 
+char $\ast$ \hyperlink{librsync_8h_cca80c2890032283d93dc7abf02aec6f}{rs\_\-format\_\-stats} (\hyperlink{structrs__stats}{rs\_\-stats\_\-t} const $\ast$, char $\ast$, size\_\-t)
+\begin{CompactList}\small\item\em Return a human-readable representation of statistics. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_11879526851c210cb64d3e9d9ca5b02d}{
+int \textbf{rs\_\-log\_\-stats} (\hyperlink{structrs__stats}{rs\_\-stats\_\-t} const $\ast$stats)}
+\label{librsync_8h_11879526851c210cb64d3e9d9ca5b02d}
+
+\item 
+void \hyperlink{librsync_8h_a65225c79fee5053c20a8453790ddb6b}{rs\_\-free\_\-sumset} (rs\_\-signature\_\-t $\ast$)
+\begin{CompactList}\small\item\em Deep deallocation of checksums. \item\end{CompactList}\item 
+void \hyperlink{librsync_8h_a2eecbc151c513956ae8ced4483a7d4d}{rs\_\-sumset\_\-dump} (rs\_\-signature\_\-t const $\ast$)
+\begin{CompactList}\small\item\em Dump signatures to the log. \item\end{CompactList}\item 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \hyperlink{librsync_8h_ee4b462c9f8c06a8bd9980ce1056432f}{rs\_\-job\_\-iter} (\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$, \hyperlink{structrs__buffers__s}{rs\_\-buffers\_\-t} $\ast$)
+\begin{CompactList}\small\item\em Run a \hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} state machine until it blocks (\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253f2d289bbc65678b4b00f56a2e6632957}{RS\_\-BLOCKED}), returns an error, or completes (RS\_\-COMPLETE). \item\end{CompactList}\item 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \hyperlink{librsync_8h_5ad2866da9b65cf2f7a59b51dc44bf51}{rs\_\-job\_\-drive} (\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$job, \hyperlink{structrs__buffers__s}{rs\_\-buffers\_\-t} $\ast$buf, rs\_\-driven\_\-cb in\_\-cb, void $\ast$in\_\-opaque, rs\_\-driven\_\-cb out\_\-cb, void $\ast$out\_\-opaque)
+\begin{CompactList}\small\item\em Actively process a job, by making callbacks to fill and empty the buffers until the job is done. \item\end{CompactList}\item 
+const \hyperlink{structrs__stats}{rs\_\-stats\_\-t} $\ast$ \hyperlink{librsync_8h_36e39c59dc69b031fd47d446d84df560}{rs\_\-job\_\-statistics} (\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$job)
+\begin{CompactList}\small\item\em Return pointer to statistics accumulated about this job. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_e14ce71828aa90381b11d7023c2e3472}{
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \textbf{rs\_\-job\_\-free} (\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$)}
+\label{librsync_8h_e14ce71828aa90381b11d7023c2e3472}
+
+\item 
+\hypertarget{librsync_8h_abcac7057a0d22a2dd2fc852a88652f5}{
+int \textbf{rs\_\-accum\_\-value} (\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$, char $\ast$sum, size\_\-t sum\_\-len)}
+\label{librsync_8h_abcac7057a0d22a2dd2fc852a88652f5}
+
+\item 
+\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$ \hyperlink{librsync_8h_220b2d586f1ed2b029b78a8ea4841e35}{rs\_\-sig\_\-begin} (size\_\-t new\_\-block\_\-len, size\_\-t strong\_\-sum\_\-len)
+\begin{CompactList}\small\item\em Set up a new encoding job. \item\end{CompactList}\item 
+\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$ \hyperlink{librsync_8h_94f836dcf033b422ffa977ae51119937}{rs\_\-delta\_\-begin} (rs\_\-signature\_\-t $\ast$)
+\begin{CompactList}\small\item\em Prepare to compute a streaming delta. \item\end{CompactList}\item 
+\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$ \hyperlink{librsync_8h_57f521edbb5f50689a9941013f0bc41c}{rs\_\-loadsig\_\-begin} (rs\_\-signature\_\-t $\ast$$\ast$)
+\begin{CompactList}\small\item\em Read a signature from a file into an rs\_\-signature\_\-t structure in memory. \item\end{CompactList}\item 
+\hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} $\ast$ \hyperlink{librsync_8h_dbbe2d04efe90a1ad09397ca2e77bfa9}{rs\_\-patch\_\-begin} (\hyperlink{librsync_8h_fc4bc64a627d7ca181a7e813832313cc}{rs\_\-copy\_\-cb} $\ast$, void $\ast$copy\_\-arg)
+\begin{CompactList}\small\item\em Apply a gloss\_\-delta to a gloss\_\-basis to recreate the new file. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_1c5553b7439b942d0dad35c8230e7217}{
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \textbf{rs\_\-build\_\-hash\_\-table} (rs\_\-signature\_\-t $\ast$sums)}
+\label{librsync_8h_1c5553b7439b942d0dad35c8230e7217}
+
+\item 
+void \hyperlink{librsync_8h_cfd431317bc2da951c6f328dcdc99be1}{rs\_\-mdfour\_\-file} (FILE $\ast$in\_\-file, char $\ast$result)
+\begin{CompactList}\small\item\em Calculate the MD4 sum of a file. \item\end{CompactList}\item 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \hyperlink{librsync_8h_b846ed4473791723cf26c03f277c7e68}{rs\_\-sig\_\-file} (FILE $\ast$old\_\-file, FILE $\ast$sig\_\-file, size\_\-t block\_\-len, size\_\-t strong\_\-len, \hyperlink{structrs__stats}{rs\_\-stats\_\-t} $\ast$)
+\begin{CompactList}\small\item\em Generate the signature of a basis file, and write it out to another. \item\end{CompactList}\item 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \hyperlink{librsync_8h_c2fecfe534f768da53d82203ae1611ce}{rs\_\-loadsig\_\-file} (FILE $\ast$, rs\_\-signature\_\-t $\ast$$\ast$, \hyperlink{structrs__stats}{rs\_\-stats\_\-t} $\ast$)
+\begin{CompactList}\small\item\em Load signatures from a signature file into memory. \item\end{CompactList}\item 
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \hyperlink{librsync_8h_ee7484374016f7fd36099f8aa4f4f38f}{rs\_\-file\_\-copy\_\-cb} (void $\ast$arg, \hyperlink{librsync-config_8h_6edddd44ca74c10ea65ef82d116e0ffa}{rs\_\-long\_\-t} pos, size\_\-t $\ast$len, void $\ast$$\ast$buf)
+\begin{CompactList}\small\item\em Default copy implementation that retrieves a part of a stdio file. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_b45107339036c675aa8a518a6ce0f187}{
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \textbf{rs\_\-delta\_\-file} (rs\_\-signature\_\-t $\ast$, FILE $\ast$new\_\-file, FILE $\ast$delta\_\-file, \hyperlink{structrs__stats}{rs\_\-stats\_\-t} $\ast$)}
+\label{librsync_8h_b45107339036c675aa8a518a6ce0f187}
+
+\item 
+\hypertarget{librsync_8h_3aee8c9ccec7d042d3d8b587cd147f5d}{
+\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} \textbf{rs\_\-patch\_\-file} (FILE $\ast$basis\_\-file, FILE $\ast$delta\_\-file, FILE $\ast$new\_\-file, \hyperlink{structrs__stats}{rs\_\-stats\_\-t} $\ast$)}
+\label{librsync_8h_3aee8c9ccec7d042d3d8b587cd147f5d}
+
+\end{CompactItemize}
+\subsubsection*{Variables}
+\begin{CompactItemize}
+\item 
+char const \hyperlink{librsync_8h_1961aca6d4e4e4af1fb75bb69474b134}{rs\_\-librsync\_\-version} \mbox{[}$\,$\mbox{]}
+\begin{CompactList}\small\item\em Library version string. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_0ffa1c0e1b70f324a74eb0ebe69d21e3}{
+char const \textbf{rs\_\-licence\_\-string} \mbox{[}$\,$\mbox{]}}
+\label{librsync_8h_0ffa1c0e1b70f324a74eb0ebe69d21e3}
+
+\item 
+int \hyperlink{librsync_8h_13d30eb003d6b9d3311435279879dd32}{rs\_\-inbuflen}
+\begin{CompactList}\small\item\em Buffer sizes for file IO. \item\end{CompactList}\item 
+\hypertarget{librsync_8h_de12a7fac722a79cf4c396cd2f7db6ff}{
+int \textbf{rs\_\-outbuflen}}
+\label{librsync_8h_de12a7fac722a79cf4c396cd2f7db6ff}
+
+\end{CompactItemize}
+
+
+\subsubsection{Detailed Description}
+Main public interface to librsync. 
+
+\begin{Desc}
+\item[Author:]Martin Pool $<$\href{mailto:mbp@samba.org}{\tt mbp@samba.org}$>$ \end{Desc}
+\begin{Desc}
+\item[Version:]librsync-0.9.6\end{Desc}
+\begin{Desc}
+\item[Id]\hyperlink{librsync_8h}{librsync.h},v 1.5 2003/12/16 00:03:40 abo Exp \end{Desc}
+
+
+See intro for an introduction to use of this library. 
+
+\subsubsection{Define Documentation}
+\hypertarget{librsync_8h_a6da4217f6c7ef24c4e7529f1d528d4d}{
+\index{librsync.h@{librsync.h}!RS\_\-DEFAULT\_\-STRONG\_\-LEN@{RS\_\-DEFAULT\_\-STRONG\_\-LEN}}
+\index{RS\_\-DEFAULT\_\-STRONG\_\-LEN@{RS\_\-DEFAULT\_\-STRONG\_\-LEN}!librsync.h@{librsync.h}}
+\paragraph[RS\_\-DEFAULT\_\-STRONG\_\-LEN]{\setlength{\rightskip}{0pt plus 5cm}\#define RS\_\-DEFAULT\_\-STRONG\_\-LEN~8}\hfill}
+\label{librsync_8h_a6da4217f6c7ef24c4e7529f1d528d4d}
+
+
+Default length of strong signatures, in bytes. 
+
+The MD4 checksum is truncated to this size. \hypertarget{librsync_8h_93340842ff428fa0c834461121bc96f9}{
+\index{librsync.h@{librsync.h}!RS\_\-DEFAULT\_\-BLOCK\_\-LEN@{RS\_\-DEFAULT\_\-BLOCK\_\-LEN}}
+\index{RS\_\-DEFAULT\_\-BLOCK\_\-LEN@{RS\_\-DEFAULT\_\-BLOCK\_\-LEN}!librsync.h@{librsync.h}}
+\paragraph[RS\_\-DEFAULT\_\-BLOCK\_\-LEN]{\setlength{\rightskip}{0pt plus 5cm}\#define RS\_\-DEFAULT\_\-BLOCK\_\-LEN~2048}\hfill}
+\label{librsync_8h_93340842ff428fa0c834461121bc96f9}
+
+
+Default block length, if not determined by any other factors. 
+
+
+
+\subsubsection{Typedef Documentation}
+\hypertarget{librsync_8h_69d928f89dbf5e0df5da101a15ac28b5}{
+\index{librsync.h@{librsync.h}!rs\_\-trace\_\-fn\_\-t@{rs\_\-trace\_\-fn\_\-t}}
+\index{rs\_\-trace\_\-fn\_\-t@{rs\_\-trace\_\-fn\_\-t}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-trace\_\-fn\_\-t]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-trace\_\-fn\_\-t}}\hfill}
+\label{librsync_8h_69d928f89dbf5e0df5da101a15ac28b5}
+
+
+Callback to write out log messages. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em level}]a syslog level. \item[{\em msg}]message to be logged. \end{description}
+\end{Desc}
+\hypertarget{librsync_8h_03dc177b86ff104157b5410afd12de5b}{
+\index{librsync.h@{librsync.h}!rs\_\-stats\_\-t@{rs\_\-stats\_\-t}}
+\index{rs\_\-stats\_\-t@{rs\_\-stats\_\-t}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-stats\_\-t]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf rs\_\-stats}  {\bf rs\_\-stats\_\-t}}\hfill}
+\label{librsync_8h_03dc177b86ff104157b5410afd12de5b}
+
+
+Performance statistics from a librsync encoding or decoding operation. 
+
+\begin{Desc}
+\item[See also:]\hyperlink{librsync_8h_cca80c2890032283d93dc7abf02aec6f}{rs\_\-format\_\-stats()}, rs\_\-log\_\-stats() \end{Desc}
+\hypertarget{librsync_8h_d9f85c111de98634e6a28523a266c3df}{
+\index{librsync.h@{librsync.h}!rs\_\-mdfour\_\-t@{rs\_\-mdfour\_\-t}}
+\index{rs\_\-mdfour\_\-t@{rs\_\-mdfour\_\-t}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-mdfour\_\-t]{\setlength{\rightskip}{0pt plus 5cm}struct rs\_\-mdfour {\bf rs\_\-mdfour\_\-t}}\hfill}
+\label{librsync_8h_d9f85c111de98634e6a28523a266c3df}
+
+
+MD4 message-digest accumulator. 
+
+\begin{Desc}
+\item[See also:]rs\_\-mdfour(), rs\_\-mdfour\_\-begin(), \hyperlink{librsync_8h_ad9c101b8cb696df9884e3c12cc8e267}{rs\_\-mdfour\_\-update()}, rs\_\-mdfour\_\-result() \end{Desc}
+\hypertarget{librsync_8h_bf9f543dbfe5c1e60c8ed1c93d087767}{
+\index{librsync.h@{librsync.h}!rs\_\-buffers\_\-t@{rs\_\-buffers\_\-t}}
+\index{rs\_\-buffers\_\-t@{rs\_\-buffers\_\-t}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-buffers\_\-t]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf rs\_\-buffers\_\-s} {\bf rs\_\-buffers\_\-t}}\hfill}
+\label{librsync_8h_bf9f543dbfe5c1e60c8ed1c93d087767}
+
+
+Stream through which the calling application feeds data to and from the library. 
+
+\begin{Desc}
+\item[See also:]struct \hyperlink{structrs__buffers__s}{rs\_\-buffers\_\-s} 
+
+api\_\-buffers \end{Desc}
+\hypertarget{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{
+\index{librsync.h@{librsync.h}!rs\_\-job\_\-t@{rs\_\-job\_\-t}}
+\index{rs\_\-job\_\-t@{rs\_\-job\_\-t}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-job\_\-t]{\setlength{\rightskip}{0pt plus 5cm}struct rs\_\-job {\bf rs\_\-job\_\-t}}\hfill}
+\label{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}
+
+
+Job of work to be done. 
+
+Created by functions such as \hyperlink{librsync_8h_220b2d586f1ed2b029b78a8ea4841e35}{rs\_\-sig\_\-begin()}, and then iterated over by \hyperlink{librsync_8h_ee4b462c9f8c06a8bd9980ce1056432f}{rs\_\-job\_\-iter()}. \hypertarget{librsync_8h_fc4bc64a627d7ca181a7e813832313cc}{
+\index{librsync.h@{librsync.h}!rs\_\-copy\_\-cb@{rs\_\-copy\_\-cb}}
+\index{rs\_\-copy\_\-cb@{rs\_\-copy\_\-cb}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-copy\_\-cb]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf rs\_\-result} {\bf rs\_\-copy\_\-cb}(void $\ast$opaque, {\bf rs\_\-long\_\-t} pos, size\_\-t $\ast$len, void $\ast$$\ast$buf)}\hfill}
+\label{librsync_8h_fc4bc64a627d7ca181a7e813832313cc}
+
+
+Callback used to retrieve parts of the basis file. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em pos}]Position where copying should begin.\item[{\em len}]On input, the amount of data that should be retrieved. Updated to show how much is actually available.\item[{\em buf}]On input, a buffer of at least {\tt $\ast$len} bytes. May be updated to point to a buffer allocated by the callback if it prefers. \end{description}
+\end{Desc}
+
+
+\subsubsection{Enumeration Type Documentation}
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff}{
+\index{librsync.h@{librsync.h}!rs\_\-loglevel@{rs\_\-loglevel}}
+\index{rs\_\-loglevel@{rs\_\-loglevel}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-loglevel]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rs\_\-loglevel}}\hfill}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff}
+
+
+Log severity levels. 
+
+These are the same as syslog, at least in glibc.
+
+\begin{Desc}
+\item[See also:]\hyperlink{librsync_8h_f4aebb30b6047b82bdca09c3a410a389}{rs\_\-trace\_\-set\_\-level()} \end{Desc}
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{RS\_\-LOG\_\-EMERG@{RS\_\-LOG\_\-EMERG}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-EMERG@{RS\_\-LOG\_\-EMERG}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff02061035a01b5ef687e246b60984e125}{
+RS\_\-LOG\_\-EMERG}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff02061035a01b5ef687e246b60984e125}
+}]System is unusable. \index{RS\_\-LOG\_\-ALERT@{RS\_\-LOG\_\-ALERT}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-ALERT@{RS\_\-LOG\_\-ALERT}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffacb3b9720c32deecc167c3a4fa0ce7db}{
+RS\_\-LOG\_\-ALERT}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffacb3b9720c32deecc167c3a4fa0ce7db}
+}]Action must be taken immediately. \index{RS\_\-LOG\_\-CRIT@{RS\_\-LOG\_\-CRIT}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-CRIT@{RS\_\-LOG\_\-CRIT}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffbb9fce001c260b228f18ef413246747d}{
+RS\_\-LOG\_\-CRIT}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffbb9fce001c260b228f18ef413246747d}
+}]Critical conditions. \index{RS\_\-LOG\_\-ERR@{RS\_\-LOG\_\-ERR}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-ERR@{RS\_\-LOG\_\-ERR}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff3be8f6c4bc775d06b990f1c30b3fba42}{
+RS\_\-LOG\_\-ERR}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff3be8f6c4bc775d06b990f1c30b3fba42}
+}]Error conditions. \index{RS\_\-LOG\_\-WARNING@{RS\_\-LOG\_\-WARNING}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-WARNING@{RS\_\-LOG\_\-WARNING}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffaad731f1e5bdf374e40d486ace54e21a}{
+RS\_\-LOG\_\-WARNING}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ffaad731f1e5bdf374e40d486ace54e21a}
+}]Warning conditions. \index{RS\_\-LOG\_\-NOTICE@{RS\_\-LOG\_\-NOTICE}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-NOTICE@{RS\_\-LOG\_\-NOTICE}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff8f2b32b0048544f4c9694b7b150221d8}{
+RS\_\-LOG\_\-NOTICE}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff8f2b32b0048544f4c9694b7b150221d8}
+}]Normal but significant condition. \index{RS\_\-LOG\_\-INFO@{RS\_\-LOG\_\-INFO}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-INFO@{RS\_\-LOG\_\-INFO}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126fff67a230a41302584eb67b9c7ccec3f62}{
+RS\_\-LOG\_\-INFO}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126fff67a230a41302584eb67b9c7ccec3f62}
+}]Informational. \index{RS\_\-LOG\_\-DEBUG@{RS\_\-LOG\_\-DEBUG}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-LOG\_\-DEBUG@{RS\_\-LOG\_\-DEBUG}}\item[{\em 
+\hypertarget{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff1527bfcd19a3e2ffcf14d8c80e32b4c6}{
+RS\_\-LOG\_\-DEBUG}
+\label{librsync_8h_acedf9be8d9837fcf7f5f1cbf37126ff1527bfcd19a3e2ffcf14d8c80e32b4c6}
+}]Debug-level messages. \end{description}
+\end{Desc}
+
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{
+\index{librsync.h@{librsync.h}!rs\_\-result@{rs\_\-result}}
+\index{rs\_\-result@{rs\_\-result}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-result]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rs\_\-result}}\hfill}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253}
+
+
+Return codes from nonblocking rsync operations. 
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{RS\_\-DONE@{RS\_\-DONE}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-DONE@{RS\_\-DONE}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253739063053a289b5c3393d78cc77b41b2}{
+RS\_\-DONE}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253739063053a289b5c3393d78cc77b41b2}
+}]Completed successfully. 
+
+\index{RS\_\-BLOCKED@{RS\_\-BLOCKED}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-BLOCKED@{RS\_\-BLOCKED}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253f2d289bbc65678b4b00f56a2e6632957}{
+RS\_\-BLOCKED}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253f2d289bbc65678b4b00f56a2e6632957}
+}]Blocked waiting for more data. 
+
+\index{RS\_\-RUNNING@{RS\_\-RUNNING}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-RUNNING@{RS\_\-RUNNING}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be1082535366e53561c2ec9a897470535ea0139c}{
+RS\_\-RUNNING}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be1082535366e53561c2ec9a897470535ea0139c}
+}]Not yet finished or blocked. 
+
+This value should never be returned to the caller. \index{RS\_\-TEST\_\-SKIPPED@{RS\_\-TEST\_\-SKIPPED}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-TEST\_\-SKIPPED@{RS\_\-TEST\_\-SKIPPED}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253130fc0bdeb6ce6ed496f07a02146f0a5}{
+RS\_\-TEST\_\-SKIPPED}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253130fc0bdeb6ce6ed496f07a02146f0a5}
+}]Test neither passed or failed. 
+
+\index{RS\_\-IO\_\-ERROR@{RS\_\-IO\_\-ERROR}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-IO\_\-ERROR@{RS\_\-IO\_\-ERROR}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253f510cfd1ede72dbfea416d3f295e6c6f}{
+RS\_\-IO\_\-ERROR}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253f510cfd1ede72dbfea416d3f295e6c6f}
+}]Error in file or network IO. 
+
+\index{RS\_\-SYNTAX\_\-ERROR@{RS\_\-SYNTAX\_\-ERROR}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-SYNTAX\_\-ERROR@{RS\_\-SYNTAX\_\-ERROR}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253c562bd33fecdc9ab03d32c2471f1bdc9}{
+RS\_\-SYNTAX\_\-ERROR}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253c562bd33fecdc9ab03d32c2471f1bdc9}
+}]Command line syntax error. 
+
+\index{RS\_\-MEM\_\-ERROR@{RS\_\-MEM\_\-ERROR}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-MEM\_\-ERROR@{RS\_\-MEM\_\-ERROR}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253403296529c4ba1653612438dd7ba9a34}{
+RS\_\-MEM\_\-ERROR}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253403296529c4ba1653612438dd7ba9a34}
+}]Out of memory. 
+
+\index{RS\_\-INPUT\_\-ENDED@{RS\_\-INPUT\_\-ENDED}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-INPUT\_\-ENDED@{RS\_\-INPUT\_\-ENDED}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253a997432dc2d2c8256ad41f96267a5185}{
+RS\_\-INPUT\_\-ENDED}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253a997432dc2d2c8256ad41f96267a5185}
+}]End of input file, possibly unexpected. 
+
+\index{RS\_\-BAD\_\-MAGIC@{RS\_\-BAD\_\-MAGIC}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-BAD\_\-MAGIC@{RS\_\-BAD\_\-MAGIC}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253da22c2fc95695e6f9558da6bcca53749}{
+RS\_\-BAD\_\-MAGIC}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253da22c2fc95695e6f9558da6bcca53749}
+}]Bad magic number at start of stream. 
+
+Probably not a librsync file, or possibly the wrong kind of file or from an incompatible library version. \index{RS\_\-UNIMPLEMENTED@{RS\_\-UNIMPLEMENTED}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-UNIMPLEMENTED@{RS\_\-UNIMPLEMENTED}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253639e01179ce01c707606a8e50bf5a6aa}{
+RS\_\-UNIMPLEMENTED}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253639e01179ce01c707606a8e50bf5a6aa}
+}]Author is lazy. 
+
+\index{RS\_\-CORRUPT@{RS\_\-CORRUPT}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-CORRUPT@{RS\_\-CORRUPT}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253897ee702e0324d286881f6b8391ea340}{
+RS\_\-CORRUPT}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253897ee702e0324d286881f6b8391ea340}
+}]Unbelievable value in stream. 
+
+\index{RS\_\-INTERNAL\_\-ERROR@{RS\_\-INTERNAL\_\-ERROR}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-INTERNAL\_\-ERROR@{RS\_\-INTERNAL\_\-ERROR}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be108253de41976437317deebdec5b27f7b39655}{
+RS\_\-INTERNAL\_\-ERROR}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be108253de41976437317deebdec5b27f7b39655}
+}]Probably a library bug. 
+
+\index{RS\_\-PARAM\_\-ERROR@{RS\_\-PARAM\_\-ERROR}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-PARAM\_\-ERROR@{RS\_\-PARAM\_\-ERROR}}\item[{\em 
+\hypertarget{librsync_8h_7feb858ceba3b8f3cf048d49be10825388f1810d792cd6fdb7d9cd866a5fd834}{
+RS\_\-PARAM\_\-ERROR}
+\label{librsync_8h_7feb858ceba3b8f3cf048d49be10825388f1810d792cd6fdb7d9cd866a5fd834}
+}]Bad value passed in to library, probably an application bug. 
+
+\end{description}
+\end{Desc}
+
+\hypertarget{librsync_8h_e631f0b26e2ccc890639ba50bf9048d5}{
+\index{librsync.h@{librsync.h}!rs\_\-work\_\-options@{rs\_\-work\_\-options}}
+\index{rs\_\-work\_\-options@{rs\_\-work\_\-options}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-work\_\-options]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rs\_\-work\_\-options}}\hfill}
+\label{librsync_8h_e631f0b26e2ccc890639ba50bf9048d5}
+
+
+Bitmask values that may be passed to the options parameter of rs\_\-work(). 
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{RS\_\-END@{RS\_\-END}!librsync.h@{librsync.h}}\index{librsync.h@{librsync.h}!RS\_\-END@{RS\_\-END}}\item[{\em 
+\hypertarget{librsync_8h_e631f0b26e2ccc890639ba50bf9048d5b9999fda414b40983edf3076f7224029}{
+RS\_\-END}
+\label{librsync_8h_e631f0b26e2ccc890639ba50bf9048d5b9999fda414b40983edf3076f7224029}
+}]End of input file; please finish up. 
+
+\end{description}
+\end{Desc}
+
+
+
+\subsubsection{Function Documentation}
+\hypertarget{librsync_8h_f4aebb30b6047b82bdca09c3a410a389}{
+\index{librsync.h@{librsync.h}!rs\_\-trace\_\-set\_\-level@{rs\_\-trace\_\-set\_\-level}}
+\index{rs\_\-trace\_\-set\_\-level@{rs\_\-trace\_\-set\_\-level}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-trace\_\-set\_\-level]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-trace\_\-set\_\-level ({\bf rs\_\-loglevel} {\em level})}\hfill}
+\label{librsync_8h_f4aebb30b6047b82bdca09c3a410a389}
+
+
+Set the least important message severity that will be output. 
+
+\hypertarget{librsync_8h_c41a6f21adb5c2f1e085550b84136f19}{
+\index{librsync.h@{librsync.h}!rs\_\-trace\_\-to@{rs\_\-trace\_\-to}}
+\index{rs\_\-trace\_\-to@{rs\_\-trace\_\-to}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-trace\_\-to]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-trace\_\-to ({\bf rs\_\-trace\_\-fn\_\-t} $\ast$ {\em new\_\-impl})}\hfill}
+\label{librsync_8h_c41a6f21adb5c2f1e085550b84136f19}
+
+
+Set trace callback. 
+
+Set trace callback.
+
+The callback scheme allows for use within applications that may have their own particular ways of reporting errors: log files for a web server, perhaps, and an error dialog for a browser.
+
+\begin{Desc}
+\item[\hyperlink{todo__todo000004}{Todo}]Do we really need such fine-grained control, or just yes/no tracing? \end{Desc}
+\hypertarget{librsync_8h_3948b0278705b506279d41886f8f6ef4}{
+\index{librsync.h@{librsync.h}!rs\_\-trace\_\-stderr@{rs\_\-trace\_\-stderr}}
+\index{rs\_\-trace\_\-stderr@{rs\_\-trace\_\-stderr}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-trace\_\-stderr]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-trace\_\-stderr (int {\em level}, \/  char const $\ast$ {\em msg})}\hfill}
+\label{librsync_8h_3948b0278705b506279d41886f8f6ef4}
+
+
+Default trace callback that writes to stderr. 
+
+Implements \hyperlink{librsync_8h_69d928f89dbf5e0df5da101a15ac28b5}{rs\_\-trace\_\-fn\_\-t}, and may be passed to \hyperlink{librsync_8h_c41a6f21adb5c2f1e085550b84136f19}{rs\_\-trace\_\-to()}. \hypertarget{librsync_8h_a5629150519b756abcd7b30fa411072f}{
+\index{librsync.h@{librsync.h}!rs\_\-supports\_\-trace@{rs\_\-supports\_\-trace}}
+\index{rs\_\-supports\_\-trace@{rs\_\-supports\_\-trace}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-supports\_\-trace]{\setlength{\rightskip}{0pt plus 5cm}int rs\_\-supports\_\-trace (void)}\hfill}
+\label{librsync_8h_a5629150519b756abcd7b30fa411072f}
+
+
+Check whether the library was compiled with debugging trace suport. 
+
+Check whether the library was compiled with debugging trace suport.
+
+If this returns false, then trying to turn trace on will achieve nothing. \hypertarget{librsync_8h_62fe2ab9307b2e81bd8a823efbd1e23b}{
+\index{librsync.h@{librsync.h}!rs\_\-hexify@{rs\_\-hexify}}
+\index{rs\_\-hexify@{rs\_\-hexify}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-hexify]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-hexify (char $\ast$ {\em to\_\-buf}, \/  void const $\ast$ {\em from\_\-buf}, \/  int {\em from\_\-len})}\hfill}
+\label{librsync_8h_62fe2ab9307b2e81bd8a823efbd1e23b}
+
+
+Convert FROM\_\-LEN bytes at FROM\_\-BUF into a hex representation in TO\_\-BUF, which must be twice as long plus one byte for the null terminator. 
+
+\hypertarget{librsync_8h_528cf29c12e534487f5b905d861c68ab}{
+\index{librsync.h@{librsync.h}!rs\_\-unbase64@{rs\_\-unbase64}}
+\index{rs\_\-unbase64@{rs\_\-unbase64}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-unbase64]{\setlength{\rightskip}{0pt plus 5cm}size\_\-t rs\_\-unbase64 (char $\ast$ {\em s})}\hfill}
+\label{librsync_8h_528cf29c12e534487f5b905d861c68ab}
+
+
+Decode a base64 buffer in place. 
+
+\begin{Desc}
+\item[Returns:]the number of binary bytes. \end{Desc}
+\hypertarget{librsync_8h_b1a719860d8f821262f730152de37339}{
+\index{librsync.h@{librsync.h}!rs\_\-base64@{rs\_\-base64}}
+\index{rs\_\-base64@{rs\_\-base64}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-base64]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-base64 (unsigned char const $\ast$ {\em buf}, \/  int {\em n}, \/  char $\ast$ {\em out})}\hfill}
+\label{librsync_8h_b1a719860d8f821262f730152de37339}
+
+
+Encode a buffer as base64. 
+
+\hypertarget{librsync_8h_1837f4992820b16914306fd070f0ac4f}{
+\index{librsync.h@{librsync.h}!rs\_\-strerror@{rs\_\-strerror}}
+\index{rs\_\-strerror@{rs\_\-strerror}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-strerror]{\setlength{\rightskip}{0pt plus 5cm}char const$\ast$ rs\_\-strerror ({\bf rs\_\-result} {\em r})}\hfill}
+\label{librsync_8h_1837f4992820b16914306fd070f0ac4f}
+
+
+Return an English description of a \hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} value. 
+
+\hypertarget{librsync_8h_ad9c101b8cb696df9884e3c12cc8e267}{
+\index{librsync.h@{librsync.h}!rs\_\-mdfour\_\-update@{rs\_\-mdfour\_\-update}}
+\index{rs\_\-mdfour\_\-update@{rs\_\-mdfour\_\-update}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-mdfour\_\-update]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-mdfour\_\-update ({\bf rs\_\-mdfour\_\-t} $\ast$ {\em md}, \/  void const $\ast$ {\em in\_\-void}, \/  size\_\-t {\em n})}\hfill}
+\label{librsync_8h_ad9c101b8cb696df9884e3c12cc8e267}
+
+
+Feed some data into the MD4 accumulator. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em n}]Number of bytes fed in. \end{description}
+\end{Desc}
+\hypertarget{librsync_8h_cca80c2890032283d93dc7abf02aec6f}{
+\index{librsync.h@{librsync.h}!rs\_\-format\_\-stats@{rs\_\-format\_\-stats}}
+\index{rs\_\-format\_\-stats@{rs\_\-format\_\-stats}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-format\_\-stats]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ rs\_\-format\_\-stats ({\bf rs\_\-stats\_\-t} const $\ast$ {\em stats}, \/  char $\ast$ {\em buf}, \/  size\_\-t {\em size})}\hfill}
+\label{librsync_8h_cca80c2890032283d93dc7abf02aec6f}
+
+
+Return a human-readable representation of statistics. 
+
+The string is truncated if it does not fit. 100 characters should be sufficient space.
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em stats}]Statistics from an encoding or decoding operation.\item[{\em buf}]Buffer to receive result. \item[{\em size}]Size of buffer. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]buf \end{Desc}
+\hypertarget{librsync_8h_a65225c79fee5053c20a8453790ddb6b}{
+\index{librsync.h@{librsync.h}!rs\_\-free\_\-sumset@{rs\_\-free\_\-sumset}}
+\index{rs\_\-free\_\-sumset@{rs\_\-free\_\-sumset}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-free\_\-sumset]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-free\_\-sumset (rs\_\-signature\_\-t $\ast$)}\hfill}
+\label{librsync_8h_a65225c79fee5053c20a8453790ddb6b}
+
+
+Deep deallocation of checksums. 
+
+\hypertarget{librsync_8h_a2eecbc151c513956ae8ced4483a7d4d}{
+\index{librsync.h@{librsync.h}!rs\_\-sumset\_\-dump@{rs\_\-sumset\_\-dump}}
+\index{rs\_\-sumset\_\-dump@{rs\_\-sumset\_\-dump}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-sumset\_\-dump]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-sumset\_\-dump (rs\_\-signature\_\-t const $\ast$)}\hfill}
+\label{librsync_8h_a2eecbc151c513956ae8ced4483a7d4d}
+
+
+Dump signatures to the log. 
+
+\hypertarget{librsync_8h_ee4b462c9f8c06a8bd9980ce1056432f}{
+\index{librsync.h@{librsync.h}!rs\_\-job\_\-iter@{rs\_\-job\_\-iter}}
+\index{rs\_\-job\_\-iter@{rs\_\-job\_\-iter}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-job\_\-iter]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-result} rs\_\-job\_\-iter ({\bf rs\_\-job\_\-t} $\ast$ {\em job}, \/  {\bf rs\_\-buffers\_\-t} $\ast$ {\em buffers})}\hfill}
+\label{librsync_8h_ee4b462c9f8c06a8bd9980ce1056432f}
+
+
+Run a \hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} state machine until it blocks (\hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253f2d289bbc65678b4b00f56a2e6632957}{RS\_\-BLOCKED}), returns an error, or completes (RS\_\-COMPLETE). 
+
+\begin{Desc}
+\item[Returns:]The \hyperlink{librsync_8h_7feb858ceba3b8f3cf048d49be108253}{rs\_\-result} that caused iteration to stop.\end{Desc}
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ending}]True if there is no more data after what's in the input buffer. The final block checksum will run across whatever's in there, without trying to accumulate anything else. \end{description}
+\end{Desc}
+\hypertarget{librsync_8h_5ad2866da9b65cf2f7a59b51dc44bf51}{
+\index{librsync.h@{librsync.h}!rs\_\-job\_\-drive@{rs\_\-job\_\-drive}}
+\index{rs\_\-job\_\-drive@{rs\_\-job\_\-drive}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-job\_\-drive]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-result} rs\_\-job\_\-drive ({\bf rs\_\-job\_\-t} $\ast$ {\em job}, \/  {\bf rs\_\-buffers\_\-t} $\ast$ {\em buf}, \/  rs\_\-driven\_\-cb {\em in\_\-cb}, \/  void $\ast$ {\em in\_\-opaque}, \/  rs\_\-driven\_\-cb {\em out\_\-cb}, \/  void $\ast$ {\em out\_\-opaque})}\hfill}
+\label{librsync_8h_5ad2866da9b65cf2f7a59b51dc44bf51}
+
+
+Actively process a job, by making callbacks to fill and empty the buffers until the job is done. 
+
+\hypertarget{librsync_8h_36e39c59dc69b031fd47d446d84df560}{
+\index{librsync.h@{librsync.h}!rs\_\-job\_\-statistics@{rs\_\-job\_\-statistics}}
+\index{rs\_\-job\_\-statistics@{rs\_\-job\_\-statistics}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-job\_\-statistics]{\setlength{\rightskip}{0pt plus 5cm}const {\bf rs\_\-stats\_\-t}$\ast$ rs\_\-job\_\-statistics ({\bf rs\_\-job\_\-t} $\ast$ {\em job})}\hfill}
+\label{librsync_8h_36e39c59dc69b031fd47d446d84df560}
+
+
+Return pointer to statistics accumulated about this job. 
+
+\hypertarget{librsync_8h_220b2d586f1ed2b029b78a8ea4841e35}{
+\index{librsync.h@{librsync.h}!rs\_\-sig\_\-begin@{rs\_\-sig\_\-begin}}
+\index{rs\_\-sig\_\-begin@{rs\_\-sig\_\-begin}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-sig\_\-begin]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-job\_\-t}$\ast$ rs\_\-sig\_\-begin (size\_\-t {\em new\_\-block\_\-len}, \/  size\_\-t {\em strong\_\-sum\_\-len})}\hfill}
+\label{librsync_8h_220b2d586f1ed2b029b78a8ea4841e35}
+
+
+Set up a new encoding job. 
+
+\begin{Desc}
+\item[See also:]\hyperlink{librsync_8h_b846ed4473791723cf26c03f277c7e68}{rs\_\-sig\_\-file()} \end{Desc}
+\hypertarget{librsync_8h_94f836dcf033b422ffa977ae51119937}{
+\index{librsync.h@{librsync.h}!rs\_\-delta\_\-begin@{rs\_\-delta\_\-begin}}
+\index{rs\_\-delta\_\-begin@{rs\_\-delta\_\-begin}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-delta\_\-begin]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-job\_\-t}$\ast$ rs\_\-delta\_\-begin (rs\_\-signature\_\-t $\ast$)}\hfill}
+\label{librsync_8h_94f836dcf033b422ffa977ae51119937}
+
+
+Prepare to compute a streaming delta. 
+
+\hypertarget{librsync_8h_57f521edbb5f50689a9941013f0bc41c}{
+\index{librsync.h@{librsync.h}!rs\_\-loadsig\_\-begin@{rs\_\-loadsig\_\-begin}}
+\index{rs\_\-loadsig\_\-begin@{rs\_\-loadsig\_\-begin}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-loadsig\_\-begin]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-job\_\-t}$\ast$ rs\_\-loadsig\_\-begin (rs\_\-signature\_\-t $\ast$$\ast$ {\em signature})}\hfill}
+\label{librsync_8h_57f521edbb5f50689a9941013f0bc41c}
+
+
+Read a signature from a file into an rs\_\-signature\_\-t structure in memory. 
+
+Once there, it can be used to generate a delta to a newer version of the file.
+
+\begin{Desc}
+\item[Note:]After loading the signatures, you must call rs\_\-build\_\-hash\_\-table() before you can use them. \end{Desc}
+\hypertarget{librsync_8h_dbbe2d04efe90a1ad09397ca2e77bfa9}{
+\index{librsync.h@{librsync.h}!rs\_\-patch\_\-begin@{rs\_\-patch\_\-begin}}
+\index{rs\_\-patch\_\-begin@{rs\_\-patch\_\-begin}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-patch\_\-begin]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-job\_\-t}$\ast$ rs\_\-patch\_\-begin ({\bf rs\_\-copy\_\-cb} $\ast$ {\em copy\_\-cb}, \/  void $\ast$ {\em copy\_\-arg})}\hfill}
+\label{librsync_8h_dbbe2d04efe90a1ad09397ca2e77bfa9}
+
+
+Apply a gloss\_\-delta to a gloss\_\-basis to recreate the new file. 
+
+This gives you back a \hyperlink{librsync_8h_99e68494fe0ac6b84f4ecfb646690c35}{rs\_\-job\_\-t} object, which can be cranked by calling \hyperlink{librsync_8h_ee4b462c9f8c06a8bd9980ce1056432f}{rs\_\-job\_\-iter()} and updating the stream pointers. When finished, call rs\_\-job\_\-finish() to dispose of it.
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em stream}]Contains pointers to input and output buffers, to be adjusted by caller on each iteration.\item[{\em copy\_\-cb}]Callback used to retrieve content from the basis file.\item[{\em copy\_\-arg}]Opaque environment pointer passed through to the callback.\end{description}
+\end{Desc}
+\begin{Desc}
+\item[\hyperlink{todo__todo000002}{Todo}]As output is produced, accumulate the MD4 checksum of the output. Then if we find a CHECKSUM command we can check it's contents against the output.\end{Desc}
+\begin{Desc}
+\item[\hyperlink{todo__todo000002}{Todo}]Implement COPY commands.\end{Desc}
+\begin{Desc}
+\item[See also:]rs\_\-patch\_\-file() \end{Desc}
+\hypertarget{librsync_8h_cfd431317bc2da951c6f328dcdc99be1}{
+\index{librsync.h@{librsync.h}!rs\_\-mdfour\_\-file@{rs\_\-mdfour\_\-file}}
+\index{rs\_\-mdfour\_\-file@{rs\_\-mdfour\_\-file}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-mdfour\_\-file]{\setlength{\rightskip}{0pt plus 5cm}void rs\_\-mdfour\_\-file (FILE $\ast$ {\em in\_\-file}, \/  char $\ast$ {\em result})}\hfill}
+\label{librsync_8h_cfd431317bc2da951c6f328dcdc99be1}
+
+
+Calculate the MD4 sum of a file. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em result}]Binary (not hex) MD4 of the whole contents of the file. \end{description}
+\end{Desc}
+\hypertarget{librsync_8h_b846ed4473791723cf26c03f277c7e68}{
+\index{librsync.h@{librsync.h}!rs\_\-sig\_\-file@{rs\_\-sig\_\-file}}
+\index{rs\_\-sig\_\-file@{rs\_\-sig\_\-file}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-sig\_\-file]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-result} rs\_\-sig\_\-file (FILE $\ast$ {\em old\_\-file}, \/  FILE $\ast$ {\em sig\_\-file}, \/  size\_\-t {\em new\_\-block\_\-len}, \/  size\_\-t {\em strong\_\-len}, \/  {\bf rs\_\-stats\_\-t} $\ast$ {\em stats})}\hfill}
+\label{librsync_8h_b846ed4473791723cf26c03f277c7e68}
+
+
+Generate the signature of a basis file, and write it out to another. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em new\_\-block\_\-len}]block size for signature generation, in bytes\item[{\em strong\_\-len}]truncated length of strong checksums, in bytes\end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]\hyperlink{librsync_8h_220b2d586f1ed2b029b78a8ea4841e35}{rs\_\-sig\_\-begin()} \end{Desc}
+\hypertarget{librsync_8h_c2fecfe534f768da53d82203ae1611ce}{
+\index{librsync.h@{librsync.h}!rs\_\-loadsig\_\-file@{rs\_\-loadsig\_\-file}}
+\index{rs\_\-loadsig\_\-file@{rs\_\-loadsig\_\-file}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-loadsig\_\-file]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-result} rs\_\-loadsig\_\-file (FILE $\ast$ {\em sig\_\-file}, \/  rs\_\-signature\_\-t $\ast$$\ast$ {\em sumset}, \/  {\bf rs\_\-stats\_\-t} $\ast$ {\em stats})}\hfill}
+\label{librsync_8h_c2fecfe534f768da53d82203ae1611ce}
+
+
+Load signatures from a signature file into memory. 
+
+Return a pointer to the newly allocated structure in SUMSET.
+
+\begin{Desc}
+\item[See also:]rs\_\-readsig\_\-begin() \end{Desc}
+\hypertarget{librsync_8h_ee7484374016f7fd36099f8aa4f4f38f}{
+\index{librsync.h@{librsync.h}!rs\_\-file\_\-copy\_\-cb@{rs\_\-file\_\-copy\_\-cb}}
+\index{rs\_\-file\_\-copy\_\-cb@{rs\_\-file\_\-copy\_\-cb}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-file\_\-copy\_\-cb]{\setlength{\rightskip}{0pt plus 5cm}{\bf rs\_\-result} rs\_\-file\_\-copy\_\-cb (void $\ast$ {\em arg}, \/  {\bf rs\_\-long\_\-t} {\em pos}, \/  size\_\-t $\ast$ {\em len}, \/  void $\ast$$\ast$ {\em buf})}\hfill}
+\label{librsync_8h_ee7484374016f7fd36099f8aa4f4f38f}
+
+
+Default copy implementation that retrieves a part of a stdio file. 
+
+
+
+\subsubsection{Variable Documentation}
+\hypertarget{librsync_8h_1961aca6d4e4e4af1fb75bb69474b134}{
+\index{librsync.h@{librsync.h}!rs\_\-librsync\_\-version@{rs\_\-librsync\_\-version}}
+\index{rs\_\-librsync\_\-version@{rs\_\-librsync\_\-version}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-librsync\_\-version]{\setlength{\rightskip}{0pt plus 5cm}char const {\bf rs\_\-librsync\_\-version}\mbox{[}$\,$\mbox{]}}\hfill}
+\label{librsync_8h_1961aca6d4e4e4af1fb75bb69474b134}
+
+
+Library version string. 
+
+\hypertarget{librsync_8h_13d30eb003d6b9d3311435279879dd32}{
+\index{librsync.h@{librsync.h}!rs\_\-inbuflen@{rs\_\-inbuflen}}
+\index{rs\_\-inbuflen@{rs\_\-inbuflen}!librsync.h@{librsync.h}}
+\paragraph[rs\_\-inbuflen]{\setlength{\rightskip}{0pt plus 5cm}int {\bf rs\_\-inbuflen}}\hfill}
+\label{librsync_8h_13d30eb003d6b9d3311435279879dd32}
+
+
+Buffer sizes for file IO. 
+
+You probably only need to change these in testing. 
