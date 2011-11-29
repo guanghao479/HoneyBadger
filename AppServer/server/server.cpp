@@ -40,7 +40,7 @@
 using namespace std;
 using namespace xercesc;
 
-pthread_t threads[1024]; // TODO: err, magic number.. need a more proper way to manage threads
+pthread_t threads[10240]; // TODO: err, magic number.. need a more proper way to manage threads
 int conn_count = 0;
 
 typedef struct user_info_s {
@@ -133,7 +133,7 @@ int getUserInfo(DOMElement* requestElement, user_info* user) {
     return BAD_XML;
   }
 
-  cout << "getUserInfo(): uid = " << user->uid << ", passwd = " << user->passwd
+  cout << "conn_count = " << conn_count << ", getUserInfo(): uid = " << user->uid << ", passwd = " << user->passwd
                           << ", hostid = " << user->hostid << ", email = "<< user->email << endl;
 
   return OK;
@@ -254,7 +254,7 @@ done:
   delete parser;
   delete errHandler;
 
-  //sleep(10);
+  //sleep(1);
 
   return ret;
 }
@@ -272,7 +272,7 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
   //       preferably make each therad handles each _active_ connections maybe?
   int rc = pthread_create(&threads[fd], NULL, run_thread, (void *)bev);
   if (rc){
-    printf("ERROR; return code from pthread_create() is %d\n", rc);
+    LOG(ERROR) << "ERROR; return code from pthread_create() is "<< rc << ", fd=" << fd;
     exit(-1);
   }
 }
@@ -320,7 +320,7 @@ echo_event_cb(struct bufferevent *bev, short events, void *ctx)
     perror("Error from bufferevent");
   if (events & (BEV_EVENT_EOF | BEV_EVENT_ERROR)) {
     bufferevent_free(bev);
-    LOG(INFO) << "buffer event freed";
+    LOG(INFO) << "buffer event freed" << ", now conn_count=" << --conn_count;
   }
 }
 
