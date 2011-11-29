@@ -38,7 +38,7 @@
 using namespace std;
 using namespace xercesc;
 
-pthread_t threads[1024];
+pthread_t threads[1024]; // TODO: err, magic number.. need a more proper way to manage threads
 int conn_count = 0;
 
 typedef struct user_info_s {
@@ -223,7 +223,6 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
       assert (getUserInfo(requestElement, &msg.user) == (int) OK);
     }
 
-
   } // end of try
   catch (const XMLException& toCatch) {
     char* message = XMLString::transcode(toCatch.getMessage());
@@ -267,15 +266,14 @@ echo_read_cb(struct bufferevent *bev, void *ctx)
 
   int fd = (int) bufferevent_getfd(bev);
 
-  cout << "now its fd=" << fd << endl;
-  // TODO: this is a quick hack, each thread is alloc'ed to do an event
-  // preferably make each therad handles each _active_ connections maybe?
+  //cout << "now its fd=" << fd << endl;
+  // TODO: this is a quick hack, each thread is alloc'ed to do an event.
+  //       preferably make each therad handles each _active_ connections maybe?
   int rc = pthread_create(&threads[fd], NULL, run_thread, (void *)bev);
   if (rc){
     printf("ERROR; return code from pthread_create() is %d\n", rc);
     exit(-1);
   }
-
 }
 
 void* run_thread(void* ctx) {
@@ -332,19 +330,12 @@ accept_conn_cb(struct evconnlistener *listener,
 {
   cout << "accept_conn_cb(): fd=" << fd <<", "<< "socklen="<<socklen
                              << ", conn_count=" << conn_count++ << endl;
+
   /* We got a new connection! Set up a bufferevent for it. */
   struct event_base *base = evconnlistener_get_base(listener);
   struct bufferevent *bev = bufferevent_socket_new(
       base, fd, BEV_OPT_CLOSE_ON_FREE|BEV_OPT_THREADSAFE); // so that we can pass it to another thread
   assert(bev != NULL);
-
-  /*
-  int rc = pthread_create(&threads[conn_count++], NULL, processBev, (void *)bev);
-  if (rc){
-    printf("ERROR; return code from pthread_create() is %d\n", rc);
-    exit(-1);
-  }
-  */
 
   bufferevent_setcb(bev, echo_read_cb, echo_write_cb, echo_event_cb, NULL);
   bufferevent_enable(bev, EV_READ|EV_WRITE);
@@ -352,11 +343,6 @@ accept_conn_cb(struct evconnlistener *listener,
   cout << "end of accept_conn_cb()" << endl;
 }
 
-void* processBev(void* ctx) {
-  struct bufferevent *bev = (struct bufferevent *) ctx;
-  bufferevent_setcb(bev, echo_read_cb, echo_write_cb, echo_event_cb, NULL);
-  bufferevent_enable(bev, EV_READ|EV_WRITE);
-}
   static void
 accept_error_cb(struct evconnlistener *listener, void *ctx)
 {
@@ -384,7 +370,6 @@ main(int argc, char **argv)
     return 1;
   }
 
-  //pthread_t thread1;
   struct event_base *base;
   struct evconnlistener *listener;
   SSL_CTX* ctx; // TODO: to add secure transport layer
