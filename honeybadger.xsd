@@ -48,65 +48,79 @@
   <xs:element name="HBMessages">
     <xs:complexType>
       <xs:sequence>
+        <xs:element type="HBMessageType" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="HBMessage">
-    <xs:complexType>
-      <xs:attribute name="action" type="xs:string" fixed="request"/>
-      <xs:attribute name="messageType" type="xs:string" fixed="register"/>
-      <xs:sequence>
-        <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="HBMessageType" abstract="true"/>
 
-  <xs:element name="HBMessage">
-    <xs:complexType>
-      <xs:attribute name="action" type="xs:string" fixed="request"/>
-      <xs:attribute name="messageType" type="xs:string" fixed="login"/>
-      <xs:sequence>
-        <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="registerMessageType">
+    <xs:complexContent>
+      <xs:extension base="HBMessageType">
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="register"/>
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
-  <xs:element name="HBMessage">
-    <xs:complexType>
-      <xs:attribute name="action" type="xs:string" fixed="request"/>
-      <xs:attribute name="messageType" type="xs:string" fixed="newfile"/>
-      <xs:sequence>
-        <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="filepath" type="filepathType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="length" type="filelengthType" minOccurs="1" maxOccurs="1"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="loginMessageType">
+    <xs:complexContent>
+      <xs:extension base="HBMessageType">
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="login"/>
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
-  <xs:element name="HBMessage">
-    <xs:complexType>
-      <xs:attribute name="action" type="xs:string" fixed="request"/>
-      <xs:attribute name="messageType" type="xs:string" fixed="filepatch"/>
-      <xs:sequence>
-        <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="path" type="filepathType" minOccurs="1" maxOccurs="1"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="newfileMessageType">
+    <xs:complexContent>
+      <xs:extension base="HBMessageType">
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="newfile"/>
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="filepath" type="filepathType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="length" type="filelengthType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
-  <xs:element name="HBMessage">
-    <xs:complexType>
-      <xs:attribute name="action" type="xs:string" fixed="request"/>
-      <xs:attribute name="messageType" type="xs:string" fixed="filecontent"/>
-      <xs:sequence>
-        <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
-        <xs:element name="content" type="xs:base64Binary" minOccurs="1" maxOccurs="1"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="filepathMessageType">
+    <xs:complexContent>
+      <xs:extension base="HBMessageType">
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="filepatch"/>
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="path" type="filepathType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="filecontentMessageType">
+    <xs:complexContent>
+      <xs:extension base="HBMessageType">
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="filecontent"/>
+        <xs:sequence>
+          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="content" type="xs:base64Binary" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
 </xs:schema>
