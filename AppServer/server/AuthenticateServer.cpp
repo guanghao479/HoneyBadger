@@ -1,5 +1,7 @@
 #include <map>
 #include <string>
+#include <fstream>
+
 #include <glog/logging.h>
 
 
@@ -72,11 +74,49 @@ authenticateServer::~authenticateServer(){
 }
 
 int authenticateServer::loadFromFile() {
-	
+
+  fstream fp;
+  fp.open(uIDFileName, fstream::in);
+
+  int res = 0;
+  if (fp.is_open()) {
+
+	string uid, psw;
+
+	/// Import user id and password to the map structure
+	while(fp >> uid >> psw) {
+	  users.insert(pair<string,string>(uid, psw));
+	}
+  	fp.close();
+  }
+  else {
+
+	LOG(WARNING) << "The stream can't be opened";
+	res = -1;
+  }
+  return res;
 }
 
 int authenticateServer::writeToFile() {
+  
+  fstream fp;
+  fp.open(uIDFileName, fstream::out);
 
+  int res  = 0;
+
+  if (fp.is_open()) {
+	/// Iterate through the map structure
+	map<string, string>::iterator it;
+	for (it = users.begin(); it != users.end(); it ++) {
+	  fp << (*it).first << " " << (*it).second << endl;
+	}
+  }
+  else {
+    LOG(ERROR) << "The ostream can't be opened";
+	res = -1;
+  }
+
+  return res;
 }
 
 int authenticateServer::registerUID(string uID, string passwd) {
