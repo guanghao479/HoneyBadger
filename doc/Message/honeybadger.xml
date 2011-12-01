@@ -1,0 +1,6 @@
+<HBMessages xmlns="http://www.honeybadger.com">
+  <registerMessage action="request" messageType="register">
+    <userid>fmaj7</userid>
+    <password>123456</password>
+  </registerMessage>
+</HBMessages>
