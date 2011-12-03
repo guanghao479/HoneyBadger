@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NetClient.cs" />
+    <Compile Include="Process.cs" />
     <Compile Include="Watcher.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

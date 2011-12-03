@@ -13,6 +13,7 @@ namespace SyncClient
     {
         private Watcher filesysWatcher;
         private NetClient netClient;
+        private Process proc = new Process();
         public Form1()
         {
             InitializeComponent();
@@ -31,7 +32,7 @@ namespace SyncClient
                 MessageBox.Show("location is empty!");
                 return;
             }
-            filesysWatcher = new Watcher(path, this);
+            filesysWatcher = new Watcher(path, proc,this);
         }
         public void addFileChange(string ch)
         {
