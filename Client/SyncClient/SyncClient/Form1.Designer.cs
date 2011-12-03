@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lbl_location = new System.Windows.Forms.Label();
             this.txt_location = new System.Windows.Forms.TextBox();
             this.btn_move = new System.Windows.Forms.Button();
             this.txt_changes = new System.Windows.Forms.TextBox();
@@ -40,17 +39,16 @@
             this.txt_ip = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_sendmsg = new System.Windows.Forms.Button();
+            this.gpb_location = new System.Windows.Forms.GroupBox();
+            this.gpb_register = new System.Windows.Forms.GroupBox();
+            this.btn_register = new System.Windows.Forms.Button();
+            this.txt_passwd = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txt_name = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.gpb_server.SuspendLayout();
+            this.gpb_register.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // lbl_location
-            // 
-            this.lbl_location.AutoSize = true;
-            this.lbl_location.Location = new System.Drawing.Point(23, 11);
-            this.lbl_location.Name = "lbl_location";
-            this.lbl_location.Size = new System.Drawing.Size(83, 12);
-            this.lbl_location.TabIndex = 0;
-            this.lbl_location.Text = "Sync location";
             // 
             // txt_location
             // 
@@ -72,17 +70,17 @@
             // 
             // txt_changes
             // 
-            this.txt_changes.Location = new System.Drawing.Point(12, 159);
+            this.txt_changes.Location = new System.Drawing.Point(12, 233);
             this.txt_changes.Multiline = true;
             this.txt_changes.Name = "txt_changes";
-            this.txt_changes.Size = new System.Drawing.Size(343, 332);
+            this.txt_changes.Size = new System.Drawing.Size(343, 258);
             this.txt_changes.TabIndex = 3;
             // 
             // btn_clear
             // 
-            this.btn_clear.Location = new System.Drawing.Point(361, 195);
+            this.btn_clear.Location = new System.Drawing.Point(361, 233);
             this.btn_clear.Name = "btn_clear";
-            this.btn_clear.Size = new System.Drawing.Size(75, 23);
+            this.btn_clear.Size = new System.Drawing.Size(75, 22);
             this.btn_clear.TabIndex = 4;
             this.btn_clear.Text = "clear";
             this.btn_clear.UseVisualStyleBackColor = true;
@@ -95,9 +93,9 @@
             this.gpb_server.Controls.Add(this.label2);
             this.gpb_server.Controls.Add(this.txt_ip);
             this.gpb_server.Controls.Add(this.label1);
-            this.gpb_server.Location = new System.Drawing.Point(12, 78);
+            this.gpb_server.Location = new System.Drawing.Point(12, 70);
             this.gpb_server.Name = "gpb_server";
-            this.gpb_server.Size = new System.Drawing.Size(444, 56);
+            this.gpb_server.Size = new System.Drawing.Size(444, 48);
             this.gpb_server.TabIndex = 6;
             this.gpb_server.TabStop = false;
             this.gpb_server.Text = "Server";
@@ -148,31 +146,101 @@
             // 
             // btn_sendmsg
             // 
-            this.btn_sendmsg.Location = new System.Drawing.Point(361, 250);
+            this.btn_sendmsg.Location = new System.Drawing.Point(361, 285);
             this.btn_sendmsg.Name = "btn_sendmsg";
-            this.btn_sendmsg.Size = new System.Drawing.Size(75, 23);
+            this.btn_sendmsg.Size = new System.Drawing.Size(75, 25);
             this.btn_sendmsg.TabIndex = 7;
             this.btn_sendmsg.Text = "sendMsg";
             this.btn_sendmsg.UseVisualStyleBackColor = true;
             this.btn_sendmsg.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // gpb_location
+            // 
+            this.gpb_location.Location = new System.Drawing.Point(12, 12);
+            this.gpb_location.Name = "gpb_location";
+            this.gpb_location.Size = new System.Drawing.Size(444, 52);
+            this.gpb_location.TabIndex = 8;
+            this.gpb_location.TabStop = false;
+            this.gpb_location.Text = "Sync location";
+            // 
+            // gpb_register
+            // 
+            this.gpb_register.Controls.Add(this.btn_register);
+            this.gpb_register.Controls.Add(this.txt_passwd);
+            this.gpb_register.Controls.Add(this.label3);
+            this.gpb_register.Controls.Add(this.txt_name);
+            this.gpb_register.Controls.Add(this.label4);
+            this.gpb_register.Location = new System.Drawing.Point(12, 126);
+            this.gpb_register.Name = "gpb_register";
+            this.gpb_register.Size = new System.Drawing.Size(444, 48);
+            this.gpb_register.TabIndex = 9;
+            this.gpb_register.TabStop = false;
+            this.gpb_register.Text = "Register";
+            // 
+            // btn_register
+            // 
+            this.btn_register.Location = new System.Drawing.Point(349, 18);
+            this.btn_register.Name = "btn_register";
+            this.btn_register.Size = new System.Drawing.Size(75, 23);
+            this.btn_register.TabIndex = 9;
+            this.btn_register.Text = "register";
+            this.btn_register.UseVisualStyleBackColor = true;
+            this.btn_register.Click += new System.EventHandler(this.btn_register_Click);
+            // 
+            // txt_passwd
+            // 
+            this.txt_passwd.Location = new System.Drawing.Point(273, 16);
+            this.txt_passwd.Name = "txt_passwd";
+            this.txt_passwd.Size = new System.Drawing.Size(64, 21);
+            this.txt_passwd.TabIndex = 8;
+            this.txt_passwd.Text = "3432";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(214, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 12);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Password:";
+            // 
+            // txt_name
+            // 
+            this.txt_name.Location = new System.Drawing.Point(58, 15);
+            this.txt_name.Name = "txt_name";
+            this.txt_name.Size = new System.Drawing.Size(132, 21);
+            this.txt_name.TabIndex = 6;
+            this.txt_name.Text = "Sam";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(20, 18);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(35, 12);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "Name:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 506);
+            this.Controls.Add(this.gpb_register);
             this.Controls.Add(this.btn_sendmsg);
             this.Controls.Add(this.gpb_server);
             this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.txt_changes);
             this.Controls.Add(this.btn_move);
             this.Controls.Add(this.txt_location);
-            this.Controls.Add(this.lbl_location);
+            this.Controls.Add(this.gpb_location);
             this.Name = "Form1";
             this.Text = "Preferences";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.gpb_server.ResumeLayout(false);
             this.gpb_server.PerformLayout();
+            this.gpb_register.ResumeLayout(false);
+            this.gpb_register.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -180,7 +248,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lbl_location;
         private System.Windows.Forms.TextBox txt_location;
         private System.Windows.Forms.Button btn_move;
         private System.Windows.Forms.TextBox txt_changes;
@@ -192,6 +259,13 @@
         private System.Windows.Forms.TextBox txt_ip;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_sendmsg;
+        private System.Windows.Forms.GroupBox gpb_location;
+        private System.Windows.Forms.GroupBox gpb_register;
+        private System.Windows.Forms.Button btn_register;
+        private System.Windows.Forms.TextBox txt_passwd;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txt_name;
+        private System.Windows.Forms.Label label4;
     }
 }
 

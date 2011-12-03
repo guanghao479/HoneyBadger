@@ -32,7 +32,7 @@ namespace SyncClient
                 MessageBox.Show("location is empty!");
                 return;
             }
-            filesysWatcher = new Watcher(path, proc,this);
+            filesysWatcher = new Watcher(path, proc, this);
         }
         public void addFileChange(string ch)
         {
@@ -46,13 +46,13 @@ namespace SyncClient
 
         private void btn_connect_Click(object sender, EventArgs e)
         {
-            string ip = this.txt_ip.Text;
+            string ip = this.txt_ip.Text.Trim();
             if ((ip == null) || (ip == ""))
             {
                 MessageBox.Show("IP is empty!");
                 return;
             }
-            string strport = this.txt_port.Text;
+            string strport = this.txt_port.Text.Trim();
             if ((strport == null) || (strport == ""))
             {
                 MessageBox.Show("Port is empty!");
@@ -66,6 +66,34 @@ namespace SyncClient
         {
             netClient.write(
                 Encoding.UTF8.GetBytes("abc"));
+        }
+
+        private void btn_register_Click(object sender, EventArgs e)
+        {
+            string name = this.txt_name.Text.Trim();
+            if ((name == null) || (name == ""))
+            {
+                MessageBox.Show("name is empty!");
+                return;
+            }
+            string passwd = this.txt_passwd.Text.Trim();
+            if ((passwd == null) || (passwd == ""))
+            {
+                MessageBox.Show("password is empty!");
+                return;
+            }
+            try
+            {
+                byte[] data = XmlClass.getRegisterMsg(ref name, ref passwd);
+                if (data != null)
+                {
+                    netClient.write(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

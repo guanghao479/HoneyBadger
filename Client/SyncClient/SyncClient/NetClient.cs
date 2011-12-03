@@ -17,16 +17,19 @@ namespace SyncClient
         private NetworkStream dataStream;
         private StreamReader streamR;
         private bool running = true;
-        public NetClient(string ip, int port) {
+        public NetClient(string ip, int port)
+        {
             remoteIP = ip;
             remotePort = port;
         }
-        public string start(){
+        public string start()
+        {
             try
             {
                 tcpclient = new TcpClient(remoteIP, remotePort);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 return "connect to server failed,error:" + e.Message;
             }
             dataStream = tcpclient.GetStream();
@@ -34,19 +37,26 @@ namespace SyncClient
             recvThread = new Thread(OnReceiveMsg);
             return "";
         }
-        public void stop() {
+        public void stop()
+        {
             running = false;
             streamR.Close();
-            if (tcpclient != null) {
+            if (tcpclient != null)
+            {
                 tcpclient.Close();
             }
         }
-        public void write(Byte[] data) {
+        public void write(Byte[] data)
+        {
             dataStream.Write(data, 0, data.Length);
         }
-        private void OnReceiveMsg() {
-            while (running) {
-                streamR.ReadLine();
+        private void OnReceiveMsg()
+        {
+            while (running)
+            {
+                string strdata = streamR.ReadToEnd();
+                byte[] byteArray = System.Text.Encoding.Default.GetBytes(strdata);
+                object msg = XmlClass.deserializeXml(byteArray);
             }
         }
     }
