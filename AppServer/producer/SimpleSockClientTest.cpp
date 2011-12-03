@@ -26,7 +26,8 @@ int total_passed = 0;
 int total_tests = 0;
 void log_without_connect();
 void log_some_msgs();
-void new_register(std::string, std::string, std::string);
+void send_new_register(std::string, std::string, std::string);
+void send_text_file(std::string, std::string, std::string);
 void dup_register();
 void valid_login();
 void invalid_login();
@@ -37,6 +38,9 @@ void log_some_msgs(string msg, int len);
 void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl);
 void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid);
 void requestLogin(string, string, string);
+DOMDocument* createHBMessage();
+void createAndAppendTextFileDoc(DOMDocument* doc, string userid, string hostid,
+        string filepath);
 
 int main(int argc, char** argv) {
   try {
@@ -54,8 +58,9 @@ int main(int argc, char** argv) {
 
   log_without_connect();
   log_some_msgs();
-  new_register("jfu", "123", "jfu@cs.rpi.edu");
+  send_new_register("jfu", "123", "jfu@cs.rpi.edu");
   requestLogin("jfu", "123", "1234567890");
+  send_text_file("fmaj7", "k234324io2u3", "abc/def/ksdl");
   dup_register();
   valid_login();
   invalid_login();
@@ -66,9 +71,6 @@ int main(int argc, char** argv) {
     << "  " << total_passed << "/" << total_tests
     << " tests passed." << std::endl
     << "---------------------------" << std::endl;
-
-fin:
-  XMLPlatformUtils::Terminate();
 
   return OK;
 }
@@ -158,7 +160,7 @@ void requestLogin(std::string id, std::string passwd, std::string hostid) {
   total_passed++;
 }
 
-void new_register(std::string id, std::string passwd, std::string email) {
+void send_new_register(std::string id, std::string passwd, std::string email) {
   total_tests ++;
   std::cout << std::endl << "====>" << std::endl;
 
@@ -178,7 +180,6 @@ void new_register(std::string id, std::string passwd, std::string email) {
 }
 
 void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl){
-
   const XMLSize_t elementCount = myDoc->getElementsByTagName(X("*"))->getLength();
   //impl          = DOMImplementationRegistry::getDOMImplementation(X("LS"));
   DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
@@ -198,6 +199,18 @@ void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl){
   log_some_msgs(output, msg_len);
 }
 
+void send_text_file(std::string userid, std::string hostid, std::string filepath) {
+    total_tests ++;
+    std::cout << std::endl << "====>" << std::endl;
+
+    DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+    DOMDocument* myDoc = createHBMessage();
+    createAndAppendTextFileDoc(myDoc, userid, hostid, filepath);
+
+    writeOutDOM(myDoc, impl);
+    std::cout << "send_text_file(): userid="<<userid <<", hostid="<<hostid <<", filepath="<<filepath << std::endl;
+    total_passed++;
+}
 
 void dup_register() {
 }
@@ -214,7 +227,7 @@ void init_sync() {
 void event_sync() {
 }
 
-void createRegisterDoc(DOMDocument* doc, string id, string pw, string email){
+void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
   int errorCode = 0;
 
   try
@@ -284,8 +297,78 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email){
     cerr << "An error occurred creating the document" << endl;
     errorCode = 3;
   }
+}
+
+DOMDocument* createHBMessage() {
+    DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+    assert(impl != NULL);
+    return impl->createDocument(
+            0,                    // root element namespace URI.
+            X("HB_Message"),         // root element name (it doesn't like space in between)
+            0);
 
 }
+
+DOMElement* createTextNode(DOMDocument* doc, string name, string val) {
+    DOMElement* textNodeElem = doc->createElement(X(name.c_str()));
+    DOMText* textNodeVal = doc->createTextNode(X(val.c_str()));
+    textNodeElem->appendChild(textNodeVal);
+    return textNodeElem;
+}
+
+void createAndAppendTextFileDoc(DOMDocument* doc, string userid, string hostid,
+        string filepath) {
+
+    int errorCode = 0;
+    try
+    {
+        DOMElement* rootElem = doc->getDocumentElement();
+
+        DOMElement* typeElem = doc->createElement(X("Type"));
+        rootElem->appendChild(typeElem);
+        typeElem->setAttribute(X("Type"), X("File"));
+
+        DOMElement* requestElem = doc->createElement(X("Request"));
+        rootElem->appendChild(requestElem);
+
+        DOMElement* uidElem = createTextNode(doc, "uid", userid);
+        requestElem->appendChild(uidElem);
+
+        DOMElement* hostidElem = createTextNode(doc, "hostid", hostid);
+        requestElem->appendChild(hostidElem);
+
+        DOMElement* fileElem = doc->createElement(X("file"));
+        requestElem->appendChild(fileElem);
+
+        DOMElement* filepathElem = createTextNode(doc, "path", filepath);
+        fileElem->appendChild(filepathElem);
+
+        //string filecontent = getTextFileContent(string filepath);
+        string filecontent = "test";
+        DOMElement* filecontentElem = createTextNode(doc, "content", filecontent);
+        fileElem->appendChild(filecontentElem);
+
+        // Now count the number of elements in the above DOM tree.
+        const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
+        cout << "The tree just created contains: " << elementCount << " elements." << endl;
+    }
+    catch (const OutOfMemoryException&)
+    {
+        cerr << "OutOfMemoryException" << endl;
+        errorCode = 5;
+    }
+    catch (const DOMException& e)
+    {
+        cerr << "DOMException code is:  " << e.code << endl;
+        errorCode = 2;
+    }
+    catch (...)
+    {
+        cerr << "An error occurred creating the document" << endl;
+        errorCode = 3;
+    }
+}
+
 
 void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid){
   int errorCode = 0;
@@ -357,7 +440,6 @@ void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid){
     cerr << "An error occurred creating the document" << endl;
     errorCode = 3;
   }
-
 }
 void log_some_msgs(string msg, int len) {
   //get a string to fire on wire

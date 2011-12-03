@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.honeybadger.com"
+           xmlns="http://www.honeybadger.com"
+           elementFormDefault="qualified">
+
+  <xs:simpleType name="useridType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hostidType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="passwordType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z0-9]{6,128}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fileidType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-f0-9]{48}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="filepathType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="filecontentType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="actionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="request"/>
+      <xs:enumeration value="response"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="filelengthType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="2000000"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="registerMessageType">
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="register"/>
+  </xs:complexType>
+
+  <xs:complexType name="loginMessageType">
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="login"/>
+  </xs:complexType>
+
+  <xs:complexType name="newfileMessageType">
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="filepath" type="filepathType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="length" type="filelengthType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="newfile"/>
+  </xs:complexType>
+
+  <xs:complexType name="filepathMessageType">
+        <xs:sequence>
+          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="path" type="filepathType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="filepatch"/>
+  </xs:complexType>
+
+  <xs:complexType name="filecontentMessageType">
+        <xs:sequence>
+          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="content" type="xs:base64Binary" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="action" type="xs:string" fixed="request"/>
+        <xs:attribute name="messageType" type="xs:string" fixed="filecontent"/>
+  </xs:complexType>
+
+  <xs:element name="HBMessages">
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded" minOccurs="0">
+        <xs:choice>
+          <xs:element name="registerMessage" type="registerMessageType" maxOccurs="unbounded"/>
+          <xs:element name="loginMessage" type="loginMessageType"/>
+          <xs:element name="newfileMessage" type="newfileMessageType"/>
+          <xs:element name="filepathMessage" type="filepathMessageType"/>
+          <xs:element name="filecontentMessage" type="filecontentMessageType"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
