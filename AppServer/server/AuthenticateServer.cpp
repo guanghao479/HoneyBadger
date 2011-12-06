@@ -1,6 +1,8 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <pthread.h>
+//#include <mutex>
 
 #include <glog/logging.h>
 
@@ -27,13 +29,19 @@ class authenticateServer {
 	int loginCheck(string uID, string passwd);
   
   private:
-	map<string, string> users;
+	map<string, string> users; //Both read and write on this structure should be locked for data consistency
 	string uIDFileName;
-}	
+	pthread_mutex_t maplock;
+//	mutex mapLock;
+};	
 
 
 authenticateServer::authenticateServer() {
   
+
+  pthread_mutex_init(&maplock, NULL);
+ // maplock  = PTHREAD_MUTEX_INITIALIZER; 
+
   uIDFileName = "users.txt";
   users.clear();
   
@@ -47,7 +55,10 @@ authenticateServer::authenticateServer() {
 }
 
 authenticateServer::authenticateServer(string uIDFiles) {
-  
+
+  //maplock = PTHREAD_MUTEX_INITIALIZER; 
+  pthread_mutex_init(&maplock, NULL);
+
   uIDFileName = uIDFiles;
   users.clear();
 
@@ -61,6 +72,8 @@ authenticateServer::authenticateServer(string uIDFiles) {
 }
 
 authenticateServer::~authenticateServer(){
+
+  pthread_mutex_destroy(&maplock);
   
   int result = writeToFile();
   if (result != 0){
@@ -76,7 +89,7 @@ authenticateServer::~authenticateServer(){
 int authenticateServer::loadFromFile() {
 
   fstream fp;
-  fp.open(uIDFileName, fstream::in);
+  fp.open(uIDFileName.c_str(), fstream::in);
 
   int res = 0;
   if (fp.is_open()) {
@@ -100,7 +113,7 @@ int authenticateServer::loadFromFile() {
 int authenticateServer::writeToFile() {
   
   fstream fp;
-  fp.open(uIDFileName, fstream::out);
+  fp.open(uIDFileName.c_str(), fstream::out);
 
   int res  = 0;
 
@@ -121,9 +134,50 @@ int authenticateServer::writeToFile() {
 
 int authenticateServer::registerUID(string uID, string passwd) {
 
+  // We'll simply lock both read and write equally for now. A read/write lock will have better performance
+  pthread_mutex_lock(&maplock);
+
+  // Find duplicates first
+  map<string, string>::iterator tmp = users.find(uID);
+  int result;
+  // Valid, successful register
+  if (tmp == users.end()) {
+    users.insert(pair<string, string>(uID, passwd)); //add user
+    result = 0;
+  }
+  // Invalid, register failed
+  else {
+	result  = -1;
+  }
+
+  pthread_mutex_unlock(&maplock);
+
+  return result;
 }
 
 int authenticateServer::loginCheck(string uID, string passwd) { 
-  
+
+  // We'll simply lock both read and write equally for now. A read/write lock will have better performance
+  pthread_mutex_lock(&maplock);
+
+  map<string, string>::iterator tmp = users.find(uID);
+  int result;
+
+  //Valid, successful login
+  if (tmp != users.end() && passwd.compare((*tmp).second) == 0) {
+	result = 0;
+  }
+  //User doesn't exist
+  else if (tmp == users.end()) {
+	result = -1;
+  }
+  //User exists, but password is wrong
+  else {
+	result = -2;
+  }
+
+  pthread_mutex_unlock(&maplock);
+
+  return result;
 }
 
