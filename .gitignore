@@ -1,2 +1,5 @@
 *.swp
 *.o
+AppServer/server/server
+AppServer/producer/client
+

@@ -69,7 +69,6 @@ int process_request(char* record, uint32_t record_len, string* reply_str) {
   ErrorCode ret;
   LOG(INFO) << "process_request(): record="<<record << ", length="<< record_len;
 
-
   string str_record(record);
   Message msg(str_record, (size_t) record_len);
   ret =  msg.parseXML();

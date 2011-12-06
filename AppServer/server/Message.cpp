@@ -14,6 +14,7 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
 #include <xercesc/sax/InputSource.hpp>
+#include <xercesc/validators/common/Grammar.hpp>
 
 #include <glog/logging.h>
 #include "server.h"
@@ -60,8 +61,13 @@ ErrorCode Message::parseXML() {
 
   // get a parser first
   XercesDOMParser* parser = new XercesDOMParser();
+
+  // Set validattion schema
+  parser->setDoSchema(true);
   parser->setValidationScheme(XercesDOMParser::Val_Always);
   parser->setDoNamespaces(true);    // optional
+  Grammar* grammar = parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true);
+
   ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
   parser->setErrorHandler(errHandler);
 
