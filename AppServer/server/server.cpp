@@ -12,17 +12,6 @@
 #include <glog/logging.h>
 
 #include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/util/XercesDefs.hpp>
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/OutOfMemoryException.hpp>
-#include <xercesc/framework/LocalFileFormatTarget.hpp>
-#include <xercesc/framework/StdOutFormatTarget.hpp>
-#include <xercesc/framework/MemBufFormatTarget.hpp>
-#include <xercesc/framework/MemBufInputSource.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/sax/HandlerBase.hpp>
-#include <xercesc/sax/InputSource.hpp>
 
 #include <pthread.h>
 #include <assert.h>
@@ -36,25 +25,13 @@
 #include "server.h"
 #include "../common/HBcommon.h"
 #include "../common/XStr.cpp"
+#include "Message.cpp" // TODO: add header file!
 
-using namespace std;
+//using namespace std;
 using namespace xercesc;
 
 pthread_t threads[10240]; // TODO: err, magic number.. need a more proper way to manage threads
 int conn_count = 0;
-
-typedef struct user_info_s {
-  string uid;
-  string passwd;
-  string hostid;
-  string email;
-} user_info;
-
-typedef struct msg_s {
-  user_info user;
-  string msg_type;
-  string action_type;
-} msg;
 
 int read_out_buffer(struct evbuffer* input, char** precord, uint32_t* precord_len) {
   size_t buffer_len = evbuffer_get_length(input);
@@ -87,174 +64,17 @@ int read_out_buffer(struct evbuffer* input, char** precord, uint32_t* precord_le
   return OK;
 }
 
-//TODO: add exception handling
-int getUserInfo(DOMElement* requestElement, user_info* user) {
-  // we know User tag follows
-  DOMNodeList* children = requestElement->getChildNodes();
-  DOMNode* userNode = children->item(1);
-  DOMElement* userElement;
-  if( userNode->getNodeType() &&  // true is not NULL
-      userNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-    userElement = dynamic_cast< xercesc::DOMElement* >( userNode );
-    if( XMLString::equals(userElement->getTagName(), X("User"))) {
-      //const XMLCh* xmlch_user = userElement->getAttribute(X("Name"));
-      //msg.action_type = XMLString::transcode(xmlch_user);
-      cout << "is User " << endl;
-      children = userElement->getChildNodes();
-      const  XMLSize_t nodeCount = children->getLength();
-      for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
-        DOMNode* crtNode = children->item(xx);
-        DOMElement* crtElement;
-        if( crtNode->getNodeType() &&  // true is not NULL
-            crtNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-          crtElement = dynamic_cast< xercesc::DOMElement* >( crtNode );
-          if( XMLString::equals(crtElement->getTagName(), X("uid"))) {
-            user->uid = XMLString::transcode(crtElement->getTextContent()) ;
-          }
-          else if( XMLString::equals(crtElement->getTagName(), X("passwd"))) {
-            user->passwd = XMLString::transcode(crtElement->getTextContent()) ;
-          }
-          else if( XMLString::equals(crtElement->getTagName(), X("hostid"))) {
-            user->hostid = XMLString::transcode(crtElement->getTextContent()) ;
-          }
-          else if( XMLString::equals(crtElement->getTagName(), X("email"))) {
-            user->email = XMLString::transcode(crtElement->getTextContent()) ;
-          }
-        }
-      }
-    }
-    else {
-      LOG(ERROR) << "error getting user tag";
-            return BAD_XML;
-    }
-  }
-  else {
-    LOG(ERROR) << "error getting user type";
-    return BAD_XML;
-  }
-
-  cout << "conn_count = " << conn_count << ", getUserInfo(): uid = " << user->uid << ", passwd = " << user->passwd
-                          << ", hostid = " << user->hostid << ", email = "<< user->email << endl;
-
-  return OK;
-}
-
 // interpret and process this request in record string
 int process_request(char* record, uint32_t record_len, string* reply_str) {
   ErrorCode ret;
   LOG(INFO) << "process_request(): record="<<record << ", length="<< record_len;
 
-  // get a parser first
-  XercesDOMParser* parser = new XercesDOMParser();
-  parser->setValidationScheme(XercesDOMParser::Val_Always);
-  parser->setDoNamespaces(true);    // optional
-  ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
-  parser->setErrorHandler(errHandler);
 
-  // create an input source from string
-  MemBufInputSource xml_buf((XMLByte*)record,(XMLSize_t) (record_len ), "test", false);
+  string str_record(record);
+  Message msg(str_record, (size_t) record_len);
+  ret =  msg.parseXML();
 
-  // try to parse this document and get fields
-  // TODO: maybe a better idea to put these functions into a msg class
-  msg msg;
-  try {
-    parser->parse(xml_buf);
-    // no need to free this, owned by parent parser project
-    DOMDocument* xmlDoc = parser->getDocument();
-    // Get the top-level element
-    DOMElement* elementRoot = xmlDoc->getDocumentElement();
-    if( !elementRoot ) { ret = BAD_XML; goto done;}
-    cout << "root: " << XMLString::transcode(elementRoot->getTagName())<< endl;
-
-    DOMNodeList*      children = elementRoot->getChildNodes();
-    const  XMLSize_t nodeCount = children->getLength();
-    cout <<" node count: " << nodeCount << endl;
-
-    //for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) { //TODO: why need to loop?
-    // we know message type tag follows
-    DOMNode* typeNode = children->item(1);
-    DOMElement* typeElement;
-    if( typeNode->getNodeType() &&  // true is not NULL
-        typeNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-      typeElement = dynamic_cast< xercesc::DOMElement* >( typeNode );
-      if( XMLString::equals(typeElement->getTagName(), X("MessageType"))) {
-        const XMLCh* xmlch_type = typeElement->getAttribute(X("Name"));
-        msg.msg_type = XMLString::transcode(xmlch_type);
-        cout << "msg type name= " << msg.msg_type << endl;
-      }
-      else {
-        cout << "Error: wrong message type tag" << endl;
-      }
-    }
-    else {
-      cout << "Error getting msg type\n" << endl;
-    }
-
-    // we know action type tag follows
-    children = typeElement->getChildNodes();
-    DOMNode* requestNode = children->item(1);
-    DOMElement* requestElement;
-    if( requestNode->getNodeType() &&  // true is not NULL
-        requestNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-      requestElement = dynamic_cast< xercesc::DOMElement* >( requestNode );
-      if( XMLString::equals(requestElement->getTagName(), X("ActionType"))) {
-        const XMLCh* xmlch_request = requestElement->getAttribute(X("Name"));
-        msg.action_type = XMLString::transcode(xmlch_request);
-        cout << "msg action type = " << msg.action_type << endl;
-      }
-      else {
-        cout << "error getting action type tag" << endl;
-      }
-    }
-    else {
-      cout << "error getting action type" << endl;
-    }
-
-    // now process message
-    if (msg.msg_type.compare("Register") == 0) {
-      // handle "Register"
-      cout << "handling Register.." << endl;
-      assert (getUserInfo(requestElement, &msg.user) == (int) OK);
-      // now grab msg.user and do whatever processing of register
-      //
-    }
-    else if (msg.msg_type.compare("Login") == 0) {
-      // handle "Login"
-      cout << "handling Login.." << endl;
-      assert (getUserInfo(requestElement, &msg.user) == (int) OK);
-    }
-
-  } // end of try
-  catch (const XMLException& toCatch) {
-    char* message = XMLString::transcode(toCatch.getMessage());
-    LOG(ERROR) << "Exception message is: \n"
-      << message << "\n";
-    XMLString::release(&message);
-    ret = BAD_XML;
-    goto done;
-  }
-  catch (const DOMException& toCatch) {
-    char* message = XMLString::transcode(toCatch.msg);
-    LOG(ERROR) << "Exception message is: \n"
-      << message << "\n";
-    XMLString::release(&message);
-    ret = BAD_XML;
-    goto done;
-  }
-  catch (...) {
-    LOG(ERROR) << "Unexpected Exception \n" ;
-    ret = BAD_XML;
-    goto done;
-  }
-
-  *reply_str = "REGISTER_OK";
-  ret = OK;
-
-done:
-  delete parser;
-  delete errHandler;
-
-  //sleep(1);
+  *reply_str = msg.getReplyStr();
 
   return ret;
 }
@@ -355,8 +175,7 @@ accept_error_cb(struct evconnlistener *listener, void *ctx)
   event_base_loopexit(base, NULL);
 }
 
-  int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   // Initialize Google's logging library.
   google::InitGoogleLogging(argv[0]);

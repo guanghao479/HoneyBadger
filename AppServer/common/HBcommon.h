@@ -1,3 +1,6 @@
+#ifndef HB_ERROR_H_
+#define HB_ERROR_H_
+
 #include "common.h" // "common.h" contains general common shortcuts
 
 //#define MB (1024*1024)
@@ -68,3 +71,5 @@ typedef enum errorCode ErrorCode;
 
 typedef uint32_t frame_t;
 typedef uint64_t serialnum_t;
+
+#endif
