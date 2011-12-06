@@ -51,42 +51,42 @@
   </xs:simpleType>
 
   <xs:complexType name="registerMessageType">
-        <xs:sequence>
-          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="action" type="xs:string" fixed="request"/>
-        <xs:attribute name="messageType" type="xs:string" fixed="register"/>
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="action" type="xs:string" fixed="request"/>
+    <xs:attribute name="messageType" type="xs:string" fixed="register"/>
   </xs:complexType>
 
   <xs:complexType name="loginMessageType">
-        <xs:sequence>
-          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="action" type="xs:string" fixed="request"/>
-        <xs:attribute name="messageType" type="xs:string" fixed="login"/>
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="action" type="xs:string" fixed="request"/>
+    <xs:attribute name="messageType" type="xs:string" fixed="login"/>
   </xs:complexType>
 
   <xs:complexType name="newfileMessageType">
-        <xs:sequence>
-          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="filepath" type="filepathType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="length" type="filelengthType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="action" type="xs:string" fixed="request"/>
-        <xs:attribute name="messageType" type="xs:string" fixed="newfile"/>
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="filepath" type="filepathType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="length" type="filelengthType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="action" type="xs:string" fixed="request"/>
+    <xs:attribute name="messageType" type="xs:string" fixed="newfile"/>
   </xs:complexType>
 
-  <xs:complexType name="filepathMessageType">
-        <xs:sequence>
-          <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="path" type="filepathType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="action" type="xs:string" fixed="request"/>
-        <xs:attribute name="messageType" type="xs:string" fixed="filepatch"/>
+  <xs:complexType name="filepatchMessageType">
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="patch" type="filepatchType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="action" type="xs:string" fixed="request"/>
+    <xs:attribute name="messageType" type="xs:string" fixed="filepatch"/>
   </xs:complexType>
 
   <xs:complexType name="filecontentMessageType">
@@ -105,7 +105,7 @@
           <xs:element name="registerMessage" type="registerMessageType" maxOccurs="unbounded"/>
           <xs:element name="loginMessage" type="loginMessageType"/>
           <xs:element name="newfileMessage" type="newfileMessageType"/>
-          <xs:element name="filepathMessage" type="filepathMessageType"/>
+          <xs:element name="filepatchMessage" type="filepatchMessageType"/>
           <xs:element name="filecontentMessage" type="filecontentMessageType"/>
         </xs:choice>
       </xs:sequence>
