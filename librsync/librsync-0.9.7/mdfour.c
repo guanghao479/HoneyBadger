@@ -52,7 +52,7 @@
 #include "types.h"
 #include "mdfour.h"
 
-
+#define inline __inline 
 #define F(X,Y,Z) (((X)&(Y)) | ((~(X))&(Z)))
 #define G(X,Y,Z) (((X)&(Y)) | ((X)&(Z)) | ((Y)&(Z)))
 #define H(X,Y,Z) ((X)^(Y)^(Z))

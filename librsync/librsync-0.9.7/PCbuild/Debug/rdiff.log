@@ -1,0 +1,87 @@
+﻿生成启动时间为 2011/12/17 22:50:51。
+     1>项目“E:\HoneyBadger\git\librsync\librsync-0.9.7\PCbuild\rdiff.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“.\Debug\rdiff.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /I.. /I../popt /ZI /nologo /W3 /WX- /Od /Oy- /D _DEBUG /D WIN32 /D _CONSOLE /D HAVE_STRERROR /D _VC80_UPGRADE=0x0600 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /Gy- /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug\\" /Fd".\Debug\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt ..\popt\popt.c
+         popt.c
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(23): warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(238) : 参见“strdup”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(72): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(433) : 参见“getenv”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(76): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : 参见“strcpy”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(161): warning C4090: “函数”: 不同的“const”限定符
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(168): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(170): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(231): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(242): warning C4090: “函数”: 不同的“const”限定符
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(247): warning C4090: “函数”: 不同的“const”限定符
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(270): warning C4013: “execvp”未定义；假设外部返回 int
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(374): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(188) : 参见“strncpy”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(440): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : 参见“strcpy”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(555): warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(238) : 参见“strdup”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(590): warning C4090: “函数”: 不同的“const”限定符
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(596): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(598): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(604): warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(238) : 参见“strdup”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(644): warning C4090: “函数”: 不同的“const”限定符
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(653): warning C4090: “函数”: 不同的“const”限定符
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(654): warning C4090: “函数”: 不同的“const”限定符
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(680): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : 参见“strcpy”的声明
+     1>e:\honeybadger\git\librsync\librsync-0.9.7\popt\popt.c(720): warning C4996: 'strerror': This function or variable may be unsafe. Consider using strerror_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(157) : 参见“strerror”的声明
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\..\rdiff.lib" /NOLOGO .\Debug\base64.obj
+         .\Debug\buf.obj
+         .\Debug\checksum.obj
+         .\Debug\command.obj
+         .\Debug\delta.obj
+         .\Debug\emit.obj
+         .\Debug\fileutil.obj
+         .\Debug\findme.obj
+         .\Debug\hex.obj
+         .\Debug\isprefix.obj
+         .\Debug\job.obj
+         .\Debug\mdfour.obj
+         .\Debug\mksum.obj
+         .\Debug\msg.obj
+         .\Debug\netint.obj
+         .\Debug\patch.obj
+         .\Debug\popt.obj
+         .\Debug\poptconfig.obj
+         .\Debug\popthelp.obj
+         .\Debug\poptparse.obj
+         .\Debug\prototab.obj
+         .\Debug\rdiff.obj
+         .\Debug\readsums.obj
+         .\Debug\rollsum.obj
+         .\Debug\scoop.obj
+         .\Debug\search.obj
+         .\Debug\stats.obj
+         .\Debug\stream.obj
+         .\Debug\sumset.obj
+         .\Debug\trace.obj
+         .\Debug\tube.obj
+         .\Debug\util.obj
+         .\Debug\version.obj
+         .\Debug\whole.obj
+         rdiff.vcxproj -> E:\HoneyBadger\git\librsync\librsync-0.9.7\PCbuild\.\..\rdiff.lib
+       FinalizeBuildStatus:
+         正在删除文件“.\Debug\rdiff.unsuccessfulbuild”。
+         正在对“.\Debug\rdiff.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\HoneyBadger\git\librsync\librsync-0.9.7\PCbuild\rdiff.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.59

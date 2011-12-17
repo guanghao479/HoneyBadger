@@ -95,5 +95,12 @@ namespace SyncClient
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            Byte[] sig=RsyncDll.getFileSig("E:\\Todo.txt");
+            Byte[] delta = RsyncDll.getFileDelta("E:\\Todo2.txt", sig);
+            RsyncDll.patchFile("E:\\Todo.txt", delta);
+        }
     }
 }

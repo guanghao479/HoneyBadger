@@ -1,0 +1,6 @@
+LIBRARY    "LibRsyncDll"
+
+EXPORTS
+   rsync_sig
+   rsync_delta
+   rsync_patch
