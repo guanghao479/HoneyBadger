@@ -50,63 +50,100 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:complexType name="registerMessageType">
+  <xs:complexType name="registerRequestMessageType">
     <xs:sequence>
       <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
-    <xs:attribute name="action" type="xs:string" fixed="request"/>
-    <xs:attribute name="messageType" type="xs:string" fixed="register"/>
   </xs:complexType>
 
-  <xs:complexType name="loginMessageType">
+  <xs:complexType name="registerResponseMessageType">
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="result" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="details" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="loginRequestMessageType">
     <xs:sequence>
       <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
-    <xs:attribute name="action" type="xs:string" fixed="request"/>
-    <xs:attribute name="messageType" type="xs:string" fixed="login"/>
   </xs:complexType>
 
-  <xs:complexType name="newfileMessageType">
+  <xs:complexType name="loginResponseMessageType">
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="result" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="details" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="newfileRequestMessageType">
     <xs:sequence>
       <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="filepath" type="filepathType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="length" type="filelengthType" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
-    <xs:attribute name="action" type="xs:string" fixed="request"/>
-    <xs:attribute name="messageType" type="xs:string" fixed="newfile"/>
   </xs:complexType>
 
-  <xs:complexType name="filepatchMessageType">
+  <xs:complexType name="newfileResponseMessageType">
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="result" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="details" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="filepatchRequestMessageType">
     <xs:sequence>
       <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="patch" type="filepatchType" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
-    <xs:attribute name="action" type="xs:string" fixed="request"/>
-    <xs:attribute name="messageType" type="xs:string" fixed="filepatch"/>
   </xs:complexType>
 
-  <xs:complexType name="filecontentMessageType">
-        <xs:sequence>
-          <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="content" type="xs:base64Binary" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="action" type="xs:string" fixed="request"/>
-        <xs:attribute name="messageType" type="xs:string" fixed="filecontent"/>
+  <xs:complexType name="filepatchResponseMessageType">
+    <xs:sequence>
+      <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="result" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="details" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="filecontentRequestMessageType">
+    <xs:sequence>
+      <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="content" type="xs:base64Binary" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="filecontentResponseMessageType">
+    <xs:sequence>
+      <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="result" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="details" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:element name="HBMessages">
     <xs:complexType>
       <xs:sequence maxOccurs="unbounded" minOccurs="0">
         <xs:choice>
-          <xs:element name="registerMessage" type="registerMessageType" maxOccurs="unbounded"/>
-          <xs:element name="loginMessage" type="loginMessageType"/>
-          <xs:element name="newfileMessage" type="newfileMessageType"/>
-          <xs:element name="filepatchMessage" type="filepatchMessageType"/>
-          <xs:element name="filecontentMessage" type="filecontentMessageType"/>
+          <xs:element name="registerRequest" type="registerRequestMessageType" maxOccurs="unbounded"/>
+          <xs:element name="registerResponse" type="registerResponseMessageType" maxOccurs="unbounded"/>
+          <xs:element name="loginRequest" type="loginRequestMessageType"/>
+          <xs:element name="loginResponse" type="loginResponseMessageType"/>
+          <xs:element name="newfileRequest" type="newfileRequestMessageType"/>
+          <xs:element name="newfileResponse" type="newfileResponseMessageType"/>
+          <xs:element name="filepatchRequest" type="filepatchRequestMessageType"/>
+          <xs:element name="filepatchResponse" type="filepatchResponseMessageType"/>
+          <xs:element name="filecontentRequest" type="filecontentRequestMessageType"/>
+          <xs:element name="filecontentResponse" type="filecontentResponseMessageType"/>
         </xs:choice>
       </xs:sequence>
     </xs:complexType>
