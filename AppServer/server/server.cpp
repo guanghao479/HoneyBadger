@@ -116,7 +116,7 @@ void* run_thread(void* ctx) {
     evbuffer_add(output, reply_str.c_str(), reply_str.length());
   }
   else if (ret == BAD_XML) {
-    reply_str = "INVALID_XML message!";
+    // do some extra processing for invalid xml messages?
     evbuffer_add(output, reply_str.c_str(), reply_str.length());
   }
 
