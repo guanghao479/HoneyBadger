@@ -32,7 +32,7 @@ namespace SyncClient
     {
         private Queue<FileEvent> eventQueue = new Queue<FileEvent>();
         private AutoResetEvent cond = new AutoResetEvent(false);
-        private SortedDictionary<Int64, FileEvent> eventTable = new SortedDictionary<long, FileEvent>();
+        private SortedDictionary<Int64, FileEvent> eventTable = new SortedDictionary<Int64, FileEvent>();
         private Thread eventProcThread;
         public Process()
         {
