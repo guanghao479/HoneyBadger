@@ -167,10 +167,7 @@ void send_new_register(std::string id, std::string passwd, std::string email) {
   DOMDocument*   myDoc;
   DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
   assert(impl != NULL);
-  myDoc = impl->createDocument(
-      0,                    // root element namespace URI.
-      X("HBMessage"),         // root element name (it doesn't like space in between)
-      0);
+  myDoc = createHBMessage();
 
   createRegisterDoc(myDoc, id, passwd, email);
   writeOutDOM(myDoc, impl);
@@ -232,19 +229,13 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 
   try
   {
-    /*
-       doc = impl->createDocument(
-       0,                    // root element namespace URI.
-       X("company"),         // root element name
-       0);                   // document type object (DTD).
-       */
 
     DOMElement* rootElem = doc->getDocumentElement();
 
     DOMElement*  prodElem = doc->createElement(X("MessageType"));
     rootElem->appendChild(prodElem);
 
-    prodElem->setAttribute(X("Name"), X("Register"));
+    prodElem->setAttribute(X("name"), X("registerRequestMessageType"));
 
     DOMElement* nextElem = doc->createElement(X("ActionType"));
     prodElem->appendChild(nextElem);
@@ -253,7 +244,7 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
     DOMElement* userElem = doc->createElement(X("User"));
     nextElem->appendChild(userElem);
 
-    DOMElement*  catElem = doc->createElement(X("uid"));
+    DOMElement*  catElem = doc->createElement(X("userid"));
     userElem->appendChild(catElem);
 
     //catElem->setAttribute(X("idea"), X("great"));
@@ -261,7 +252,7 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
     DOMText*    catDataVal = doc->createTextNode(X(id.c_str()));
     catElem->appendChild(catDataVal);
 
-    DOMElement*  devByElem = doc->createElement(X("passwd"));
+    DOMElement*  devByElem = doc->createElement(X("password"));
     userElem->appendChild(devByElem);
 
     DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
@@ -304,7 +295,7 @@ DOMDocument* createHBMessage() {
     assert(impl != NULL);
     return impl->createDocument(
             0,                    // root element namespace URI.
-            X("HB_Message"),         // root element name (it doesn't like space in between)
+            X("HBMessages"),         // root element name (it doesn't like space in between)
             0);
 
 }

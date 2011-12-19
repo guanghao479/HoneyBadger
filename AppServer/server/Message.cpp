@@ -62,11 +62,23 @@ ErrorCode Message::parseXML() {
   // get a parser first
   XercesDOMParser* parser = new XercesDOMParser();
 
-  // Set validattion schema
+  //Use namespaces and schema
   parser->setDoSchema(true);
+  //Set the validation scheme
   parser->setValidationScheme(XercesDOMParser::Val_Always);
   parser->setDoNamespaces(true);    // optional
+
   Grammar* grammar = parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true);
+
+  // jingfu: try following schema validation, ding's grammar wasn't checking
+  // schema properly
+  parser->setExternalNoNamespaceSchemaLocation("../common/honeyBadger.xsd");
+  //Get all errors
+  parser->setExitOnFirstFatalError(true);
+  //All validation errors are fatal.
+  parser->setValidationConstraintFatal(true);
+  //Set schema validation
+  //parser->setValidationSchemaFullChecking(false);
 
   ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
   parser->setErrorHandler(errHandler);
