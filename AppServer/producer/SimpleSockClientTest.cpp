@@ -58,8 +58,8 @@ int main(int argc, char** argv) {
 
   log_without_connect();
   log_some_msgs();
-  send_new_register("jfu", "123", "jfu@cs.rpi.edu");
-  requestLogin("jfu", "123", "1234567890");
+  send_new_register("jfu", "good_password_123", "fuj@cs.rpi.edu");
+  requestLogin("jfu", "im_a_wrong_password", "1234567890");
   send_text_file("fmaj7", "k234324io2u3", "abc/def/ksdl");
   dup_register();
   valid_login();
@@ -148,10 +148,7 @@ void requestLogin(std::string id, std::string passwd, std::string hostid) {
   DOMDocument*   myDoc;
   DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
   assert(impl != NULL);
-  myDoc = impl->createDocument(
-      0,                    // root element namespace URI.
-      X("HBMessage"),         // root element name (it doesn't like space in between)
-      0);
+  myDoc = createHBMessage();
 
   createLoginDoc(myDoc, id, passwd, hostid);
   writeOutDOM(myDoc, impl);
@@ -229,12 +226,12 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 
   try
   {
-
     DOMElement* rootElem = doc->getDocumentElement();
 
-    DOMElement*  prodElem = doc->createElement(X("MessageType"));
-    rootElem->appendChild(prodElem);
+    DOMElement*  typeElem = doc->createElement(X("registerRequestMessageType"));
+    rootElem->appendChild(typeElem);
 
+    /*
     prodElem->setAttribute(X("name"), X("registerRequestMessageType"));
 
     DOMElement* nextElem = doc->createElement(X("ActionType"));
@@ -243,9 +240,10 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
 
     DOMElement* userElem = doc->createElement(X("User"));
     nextElem->appendChild(userElem);
+    */
 
     DOMElement*  catElem = doc->createElement(X("userid"));
-    userElem->appendChild(catElem);
+    typeElem->appendChild(catElem);
 
     //catElem->setAttribute(X("idea"), X("great"));
 
@@ -253,16 +251,19 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
     catElem->appendChild(catDataVal);
 
     DOMElement*  devByElem = doc->createElement(X("password"));
-    userElem->appendChild(devByElem);
+    typeElem->appendChild(devByElem);
 
     DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
     devByElem->appendChild(devByDataVal);
 
+    // new schema got rid of email info
+    /*
     DOMElement*  evaByElem = doc->createElement(X("email"));
-    userElem->appendChild(evaByElem);
+    typeElem->appendChild(evaByElem);
 
     DOMText*  evaByDataVal = doc->createTextNode(X(email.c_str()));
     evaByElem->appendChild(evaByDataVal);
+    */
 
     //
     // Now count the number of elements in the above DOM tree.
@@ -361,51 +362,38 @@ void createAndAppendTextFileDoc(DOMDocument* doc, string userid, string hostid,
 }
 
 
-void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid){
+void createLoginDoc(DOMDocument* doc, string id, string pw, string email) {
   int errorCode = 0;
 
   try
   {
-    /*
-       doc = impl->createDocument(
-       0,                    // root element namespace URI.
-       X("company"),         // root element name
-       0);                   // document type object (DTD).
-       */
-
     DOMElement* rootElem = doc->getDocumentElement();
 
-    DOMElement*  prodElem = doc->createElement(X("MessageType"));
-    rootElem->appendChild(prodElem);
+    DOMElement*  typeElem = doc->createElement(X("loginRequestMessageType"));
+    rootElem->appendChild(typeElem);
 
-    prodElem->setAttribute(X("Name"), X("Login"));
-
-    DOMElement* nextElem = doc->createElement(X("ActionType"));
-    prodElem->appendChild(nextElem);
-    nextElem->setAttribute(X("Name"), X("Request"));
-
-    DOMElement* userElem = doc->createElement(X("User"));
-    nextElem->appendChild(userElem);
-
-    DOMElement*  catElem = doc->createElement(X("uid"));
-    userElem->appendChild(catElem);
+    DOMElement*  catElem = doc->createElement(X("userid"));
+    typeElem->appendChild(catElem);
 
     //catElem->setAttribute(X("idea"), X("great"));
 
     DOMText*    catDataVal = doc->createTextNode(X(id.c_str()));
     catElem->appendChild(catDataVal);
 
-    DOMElement*  devByElem = doc->createElement(X("passwd"));
-    userElem->appendChild(devByElem);
+    DOMElement*  devByElem = doc->createElement(X("password"));
+    typeElem->appendChild(devByElem);
 
     DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
     devByElem->appendChild(devByDataVal);
 
-    DOMElement*  evaByElem = doc->createElement(X("hostid"));
-    userElem->appendChild(evaByElem);
+    // new schema got rid of email info
+    /*
+    DOMElement*  evaByElem = doc->createElement(X("email"));
+    typeElem->appendChild(evaByElem);
 
-    DOMText*  evaByDataVal = doc->createTextNode(X(hostid.c_str()));
+    DOMText*  evaByDataVal = doc->createTextNode(X(email.c_str()));
     evaByElem->appendChild(evaByDataVal);
+    */
 
     //
     // Now count the number of elements in the above DOM tree.

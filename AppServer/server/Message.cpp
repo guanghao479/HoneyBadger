@@ -41,6 +41,7 @@ struct Message{
   private:
   int getUserInfo(DOMElement* requestElement, user_info* user);
   void setReplyStr(string reply);
+  string generateRegisterReplyStr(ErrorCode, user_info);
 
   public:
 
@@ -70,6 +71,7 @@ ErrorCode Message::parseXML() {
 
   Grammar* grammar = parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true);
 
+  /*
   // jingfu: try following schema validation, ding's grammar wasn't checking
   // schema properly
   parser->setExternalNoNamespaceSchemaLocation("../common/honeyBadger.xsd");
@@ -79,6 +81,7 @@ ErrorCode Message::parseXML() {
   parser->setValidationConstraintFatal(true);
   //Set schema validation
   //parser->setValidationSchemaFullChecking(false);
+  */
 
   ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
   parser->setErrorHandler(errHandler);
@@ -89,18 +92,22 @@ ErrorCode Message::parseXML() {
   // try to parse this document and get fields
   // TODO: maybe a better idea to put these functions into a msg class
   //msg msg;
+  LOG(INFO) << "schema check passed" << endl;
+  cout << "schema check passed" << endl;
   try {
     parser->parse(xml_buf);
     // no need to free this, owned by parent parser project
     DOMDocument* xmlDoc = parser->getDocument();
+    assert(xmlDoc != NULL);
     // Get the top-level element
     DOMElement* elementRoot = xmlDoc->getDocumentElement();
-    if( !elementRoot ) { ret = BAD_XML; goto done;}
-    cout << "root: " << XMLString::transcode(elementRoot->getTagName())<< endl;
+
+    if( !elementRoot ) { goto bad_xml;}
+    //cout << "root: " << XMLString::transcode(elementRoot->getTagName())<< endl;
 
     DOMNodeList*      children = elementRoot->getChildNodes();
     const  XMLSize_t nodeCount = children->getLength();
-    cout <<" node count: " << nodeCount << endl;
+    //cout <<" node count: " << nodeCount << endl;
 
     //for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) { //TODO: why need to loop?
     // we know message type tag follows
@@ -109,64 +116,44 @@ ErrorCode Message::parseXML() {
     if( typeNode->getNodeType() &&  // true is not NULL
         typeNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
       typeElement = dynamic_cast< xercesc::DOMElement* >( typeNode );
-      if( XMLString::equals(typeElement->getTagName(), X("MessageType"))) {
-        const XMLCh* xmlch_type = typeElement->getAttribute(X("Name"));
-        msg.msg_type = XMLString::transcode(xmlch_type);
-        cout << "msg type name= " << msg.msg_type << endl;
+      if( XMLString::equals(typeElement->getTagName(), X("registerRequestMessageType"))) {
+        cout << "this is a registerRequestMessageType" << endl;
+        ErrorCode user_ret;
+        user_ret = (ErrorCode) getUserInfo(typeElement, &msg.user);
+        assert(user_ret == OK);
+        // now grab msg.user and do whatever processing of register
+        //
+        // suppose this user ID is unique and everything is legit, now create
+        // empty dir for this user
+        // assert (createDataDir(uid) = OK);
+
+        setReplyStr(generateRegisterReplyStr(user_ret, msg.user));
+
+        ret = OK;
+        goto done;
+      }
+      else if( XMLString::equals(typeElement->getTagName(), X("loginRequestMessageType"))) {
+        cout << "this is a loginRequestMessageType" << endl;
+        assert (getUserInfo(typeElement, &msg.user) == (int) OK);
+        setReplyStr("Login_OK");
+
+        ret = OK;
+        goto done;
+      }
+      else if( XMLString::equals(typeElement->getTagName(), X("newfileRequestMessageType"))) {
+        cout << "this is a newfileRequestMessageType" << endl;
+        assert (getUserInfo(typeElement, &msg.user) == (int) OK);
+        setReplyStr("newFile_OK");
+
+        ret = OK;
+        goto done;
       }
       else {
-        cout << "Error: wrong message type tag" << endl;
+        cout << "Error: unknow message type tag" << endl;
       }
     }
     else {
-      cout << "Error getting msg type\n" << endl;
-    }
-
-    // we know action type tag follows
-    children = typeElement->getChildNodes();
-    DOMNode* requestNode = children->item(1);
-    DOMElement* requestElement;
-    if( requestNode->getNodeType() &&  // true is not NULL
-        requestNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-      requestElement = dynamic_cast< xercesc::DOMElement* >( requestNode );
-      if( XMLString::equals(requestElement->getTagName(), X("ActionType"))) {
-        const XMLCh* xmlch_request = requestElement->getAttribute(X("Name"));
-        msg.action_type = XMLString::transcode(xmlch_request);
-        cout << "msg action type = " << msg.action_type << endl;
-      }
-      else {
-        cout << "error getting action type tag" << endl;
-      }
-    }
-    else {
-      cout << "error getting action type" << endl;
-    }
-
-    // now process message
-    if (msg.msg_type.compare("Register") == 0) {
-      // handle "Register"
-      cout << "handling Register.." << endl;
-      assert (getUserInfo(requestElement, &msg.user) == (int) OK);
-      // now grab msg.user and do whatever processing of register
-      //
-      // suppose this user ID is unique and everything is legit, now create
-      // empty dir for this user
-      // assert (createDataDir(uid) = OK);
-      setReplyStr("Register_OK");
-
-      ret = OK;
-      goto done;
-
-    }
-    else if (msg.msg_type.compare("Login") == 0) {
-      // handle "Login"
-      cout << "handling Login.." << endl;
-      assert (getUserInfo(requestElement, &msg.user) == (int) OK);
-
-      setReplyStr("Login_OK");
-
-      ret = OK;
-      goto done;
+      cout << "Error: can't parse this xml" << endl;
     }
 
   } // end of try
@@ -200,54 +187,51 @@ done:
   return ret;
 }
 
+string Message::generateRegisterReplyStr(ErrorCode user_ret, user_info user) {
+  string ret_str;
+  if(user_ret == OK) {
+    // set new reply xml message here
+  }
+  return string("Register_OK");
+}
+
 //TODO: add exception handling
 int Message::getUserInfo(DOMElement* requestElement, user_info* user) {
   // we know User tag follows
-  DOMNodeList* children = requestElement->getChildNodes();
-  DOMNode* userNode = children->item(1);
-  DOMElement* userElement;
-  if( userNode->getNodeType() &&  // true is not NULL
-      userNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-    userElement = dynamic_cast< xercesc::DOMElement* >( userNode );
-    if( XMLString::equals(userElement->getTagName(), X("User"))) {
-      //const XMLCh* xmlch_user = userElement->getAttribute(X("Name"));
-      //msg.action_type = XMLString::transcode(xmlch_user);
-      cout << "is User " << endl;
-      children = userElement->getChildNodes();
-      const  XMLSize_t nodeCount = children->getLength();
-      for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
-        DOMNode* crtNode = children->item(xx);
-        DOMElement* crtElement;
-        if( crtNode->getNodeType() &&  // true is not NULL
-            crtNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
-          crtElement = dynamic_cast< xercesc::DOMElement* >( crtNode );
-          if( XMLString::equals(crtElement->getTagName(), X("uid"))) {
-            user->uid = XMLString::transcode(crtElement->getTextContent()) ;
-          }
-          else if( XMLString::equals(crtElement->getTagName(), X("passwd"))) {
-            user->passwd = XMLString::transcode(crtElement->getTextContent()) ;
-          }
-          else if( XMLString::equals(crtElement->getTagName(), X("hostid"))) {
-            user->hostid = XMLString::transcode(crtElement->getTextContent()) ;
-          }
-          else if( XMLString::equals(crtElement->getTagName(), X("email"))) {
-            user->email = XMLString::transcode(crtElement->getTextContent()) ;
-          }
+  //DOMNodeList* children = requestElement->getChildNodes();
+  //DOMNode* userNode = children->item(1);
+  DOMElement* userElement = requestElement;
+  if( XMLString::equals(userElement->getTagName(), X("registerRequestMessageType")) ||
+      XMLString::equals(userElement->getTagName(), X("loginRequestMessageType"))    ) {
+    DOMNodeList* children = userElement->getChildNodes();
+    const  XMLSize_t nodeCount = children->getLength();
+    for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
+      DOMNode* crtNode = children->item(xx);
+      DOMElement* crtElement;
+      if( crtNode->getNodeType() &&  // true is not NULL
+          crtNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+        crtElement = dynamic_cast< xercesc::DOMElement* >( crtNode );
+        if( XMLString::equals(crtElement->getTagName(), X("userid"))) {
+          user->uid = XMLString::transcode(crtElement->getTextContent()) ;
+        }
+        else if( XMLString::equals(crtElement->getTagName(), X("password"))) {
+          user->passwd = XMLString::transcode(crtElement->getTextContent()) ;
+        }
+        else if( XMLString::equals(crtElement->getTagName(), X("hostid"))) {
+          user->hostid = XMLString::transcode(crtElement->getTextContent()) ;
+        }
+        else if( XMLString::equals(crtElement->getTagName(), X("email"))) {
+          user->email = XMLString::transcode(crtElement->getTextContent()) ;
         }
       }
     }
-    else {
-      LOG(ERROR) << "error getting user tag";
-            return BAD_XML;
-    }
   }
   else {
-    LOG(ERROR) << "error getting user type";
+    LOG(ERROR) << "error getting user tag";
     return BAD_XML;
   }
-
-  cout << "conn_count = " << -1 <<  ", getUserInfo(): uid = " << user->uid << ", passwd = " << user->passwd
-                          << ", hostid = " << user->hostid << ", email = "<< user->email << endl;
+  cout <<  "getUserInfo(): uid = " << user->uid << ", passwd = " << user->passwd
+                           << ", hostid = " << user->hostid << ", email = "<< user->email << endl;
 
   return OK;
 }
@@ -261,3 +245,68 @@ void Message::setReplyStr(string reply) {
 string Message::getReplyStr() {
   return replyStr;
 }
+
+/*
+  try
+  {
+    DOMElement* rootElem = doc->getDocumentElement();
+
+    DOMElement*  typeElem = doc->createElement(X("registerResponseMessageType"));
+    rootElem->appendChild(typeElem);
+
+    DOMElement*  catElem = doc->createElement(X("userid"));
+    typeElem->appendChild(catElem);
+
+    DOMText*    catDataVal = doc->createTextNode(X(id.c_str()));
+    catElem->appendChild(catDataVal);
+
+    DOMElement*  devByElem = doc->createElement(X("result"));
+    typeElem->appendChild(devByElem);
+
+    DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
+    devByElem->appendChild(devByDataVal);
+
+
+    DOMElement*  evaByElem = doc->createElement(X("details"));
+    typeElem->appendChild(evaByElem);
+
+    DOMText*  evaByDataVal = doc->createTextNode(X(email.c_str()));
+    evaByElem->appendChild(evaByDataVal);
+
+
+    //
+    // Now count the number of elements in the above DOM tree.
+    //
+
+    const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
+    cout << "The tree just created contains: " << elementCount << " elements." << endl;
+
+    //doc->release();
+  }
+  catch (const OutOfMemoryException&)
+  {
+    cerr << "OutOfMemoryException" << endl;
+    errorCode = 5;
+  }
+  catch (const DOMException& e)
+  {
+    cerr << "DOMException code is:  " << e.code << endl;
+    errorCode = 2;
+  }
+  catch (...)
+  {
+    cerr << "An error occurred creating the document" << endl;
+    errorCode = 3;
+  }
+}
+
+DOMDocument* createHBMessage() {
+    DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+    assert(impl != NULL);
+    return impl->createDocument(
+            0,                    // root element namespace URI.
+            X("HBMessages"),         // root element name (it doesn't like space in between)
+            0);
+
+}
+*/
