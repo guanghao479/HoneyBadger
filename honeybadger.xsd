@@ -32,6 +32,12 @@
     <xs:restriction base="xs:string"/>
   </xs:simpleType>
 
+  <xs:simpleType name="emailType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="filecontentType">
     <xs:restriction base="xs:string"/>
   </xs:simpleType>
@@ -54,6 +60,7 @@
     <xs:sequence>
       <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="password" type="passwordType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="email" type="emailType" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 
