@@ -39,11 +39,13 @@ struct Message{
   ErrorCode parseXML();
 
   private:
-  int getUserInfo(DOMElement* requestElement, user_info* user);
+  ErrorCode getUserInfo(DOMElement* requestElement, user_info* user);
   void setReplyStr(string reply);
-  string generateRegisterReplyStr(ErrorCode, user_info);
-
-  public:
+  string generateRegisterReplyStr(ErrorCode, user_info*);
+  string generateLoginReplyStr(ErrorCode, user_info*);
+  DOMDocument* createHBMessage();
+  ErrorCode createRegisterOrLoginResponseDoc(DOMDocument* doc, string response_type, string id, string code, string detail);
+  string writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl);
 
   private:
   string record;
@@ -118,8 +120,7 @@ ErrorCode Message::parseXML() {
       typeElement = dynamic_cast< xercesc::DOMElement* >( typeNode );
       if( XMLString::equals(typeElement->getTagName(), X("registerRequestMessageType"))) {
         cout << "this is a registerRequestMessageType" << endl;
-        ErrorCode user_ret;
-        user_ret = (ErrorCode) getUserInfo(typeElement, &msg.user);
+        ErrorCode user_ret = (ErrorCode) getUserInfo(typeElement, &msg.user);
         assert(user_ret == OK);
         // now grab msg.user and do whatever processing of register
         //
@@ -127,15 +128,19 @@ ErrorCode Message::parseXML() {
         // empty dir for this user
         // assert (createDataDir(uid) = OK);
 
-        setReplyStr(generateRegisterReplyStr(user_ret, msg.user));
+        setReplyStr(generateRegisterReplyStr(user_ret, &msg.user));
 
         ret = OK;
         goto done;
       }
       else if( XMLString::equals(typeElement->getTagName(), X("loginRequestMessageType"))) {
         cout << "this is a loginRequestMessageType" << endl;
-        assert (getUserInfo(typeElement, &msg.user) == (int) OK);
-        setReplyStr("Login_OK");
+        ErrorCode user_ret = getUserInfo(typeElement, &msg.user);
+        assert(user_ret == OK);
+
+        // now check user database and see if (uid, passwd) matches
+
+        setReplyStr(generateLoginReplyStr(user_ret, &msg.user));
 
         ret = OK;
         goto done;
@@ -187,16 +192,34 @@ done:
   return ret;
 }
 
-string Message::generateRegisterReplyStr(ErrorCode user_ret, user_info user) {
+string Message::generateRegisterReplyStr(ErrorCode user_ret, user_info* user) {
   string ret_str;
   if(user_ret == OK) {
     // set new reply xml message here
+    DOMDocument*   myDoc = createHBMessage();
+    DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+    assert(impl != NULL);
+    assert( createRegisterOrLoginResponseDoc(myDoc, string("registerResponseMessageType"), user->uid, string("1"), string("Register succeed. Wecome to HB!")) == OK);
+    ret_str = writeOutDOM(myDoc, impl);
   }
-  return string("Register_OK");
+  return ret_str;
+}
+
+string Message::generateLoginReplyStr(ErrorCode user_ret, user_info* user) {
+  string ret_str;
+  if(user_ret == OK) {
+    // set new reply xml message here
+    DOMDocument*   myDoc = createHBMessage();
+    DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+    assert(impl != NULL);
+    assert( createRegisterOrLoginResponseDoc(myDoc, string("loginResponseMessageType"), user->uid, string("2"), string("Login succeed. You balling!")) == OK);
+    ret_str = writeOutDOM(myDoc, impl);
+  }
+  return ret_str;
 }
 
 //TODO: add exception handling
-int Message::getUserInfo(DOMElement* requestElement, user_info* user) {
+ErrorCode Message::getUserInfo(DOMElement* requestElement, user_info* user) {
   // we know User tag follows
   //DOMNodeList* children = requestElement->getChildNodes();
   //DOMNode* userNode = children->item(1);
@@ -246,12 +269,23 @@ string Message::getReplyStr() {
   return replyStr;
 }
 
-/*
+DOMDocument* Message::createHBMessage() {
+    DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+    assert(impl != NULL);
+    return impl->createDocument(
+            0,                    // root element namespace URI.
+            X("HBMessages"),         // root element name (it doesn't like space in between)
+            0);
+}
+
+ErrorCode Message::createRegisterOrLoginResponseDoc(DOMDocument* doc, string response_type, string id, string code, string details){
+  ErrorCode errorCode ;
+
   try
   {
     DOMElement* rootElem = doc->getDocumentElement();
 
-    DOMElement*  typeElem = doc->createElement(X("registerResponseMessageType"));
+    DOMElement*  typeElem = doc->createElement(X(response_type.c_str()));
     rootElem->appendChild(typeElem);
 
     DOMElement*  catElem = doc->createElement(X("userid"));
@@ -260,53 +294,56 @@ string Message::getReplyStr() {
     DOMText*    catDataVal = doc->createTextNode(X(id.c_str()));
     catElem->appendChild(catDataVal);
 
-    DOMElement*  devByElem = doc->createElement(X("result"));
+    DOMElement*  codeElem = doc->createElement(X("result"));
+    typeElem->appendChild(codeElem);
+
+    DOMText*    codeDataVal = doc->createTextNode(X(code.c_str()));
+    codeElem->appendChild(codeDataVal);
+
+    DOMElement*  devByElem = doc->createElement(X("details"));
     typeElem->appendChild(devByElem);
 
-    DOMText*  devByDataVal = doc->createTextNode(X(pw.c_str()));
+    DOMText*  devByDataVal = doc->createTextNode(X(details.c_str()));
     devByElem->appendChild(devByDataVal);
 
-
-    DOMElement*  evaByElem = doc->createElement(X("details"));
-    typeElem->appendChild(evaByElem);
-
-    DOMText*  evaByDataVal = doc->createTextNode(X(email.c_str()));
-    evaByElem->appendChild(evaByDataVal);
-
-
-    //
-    // Now count the number of elements in the above DOM tree.
-    //
-
-    const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
-    cout << "The tree just created contains: " << elementCount << " elements." << endl;
-
+    errorCode = OK;
     //doc->release();
   }
   catch (const OutOfMemoryException&)
   {
     cerr << "OutOfMemoryException" << endl;
-    errorCode = 5;
+    errorCode = OUT_OF_MEMORY;
   }
   catch (const DOMException& e)
   {
     cerr << "DOMException code is:  " << e.code << endl;
-    errorCode = 2;
+    errorCode = UNKNOWN_EXCEPTION;
   }
   catch (...)
   {
     cerr << "An error occurred creating the document" << endl;
-    errorCode = 3;
+    errorCode = UNKNOWN_EXCEPTION;
   }
+
+  return errorCode;
 }
 
-DOMDocument* createHBMessage() {
-    DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
-    assert(impl != NULL);
-    return impl->createDocument(
-            0,                    // root element namespace URI.
-            X("HBMessages"),         // root element name (it doesn't like space in between)
-            0);
+string Message::writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl){
+  const XMLSize_t elementCount = myDoc->getElementsByTagName(X("*"))->getLength();
+  //impl          = DOMImplementationRegistry::getDOMImplementation(X("LS"));
+  DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+  DOMConfiguration *theConfig = theSerializer->getDomConfig();
+  theConfig->setParameter(X("format-pretty-print"), true);
+  //if ( theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true) )
+  //      theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+  DOMLSOutput       *theOutputDesc = ((DOMImplementationLS*)impl)->createLSOutput();
+  //XMLFormatTarget *myFormTarget = new StdOutFormatTarget();
+  MemBufFormatTarget *myFormTarget = new MemBufFormatTarget();
+  theOutputDesc->setByteStream(myFormTarget);
+  theSerializer->write(myDoc, theOutputDesc);
+  cout << "MemBuf len: "<< myFormTarget->getLen() << ", content: \n"<< myFormTarget->getRawBuffer() << endl;
 
+  string output((char*)myFormTarget->getRawBuffer());
+
+  return output;
 }
-*/

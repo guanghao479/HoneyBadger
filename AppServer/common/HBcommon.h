@@ -64,7 +64,8 @@ enum errorCode {
   BAD_MSG,
   BAD_ADDR,
   SEND_FAIL,
-  RECV_FAIL
+  RECV_FAIL,
+  UNKNOWN_EXCEPTION
 };
 
 typedef enum errorCode ErrorCode;
