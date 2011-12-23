@@ -65,28 +65,29 @@ ErrorCode Message::parseXML() {
   // get a parser first
   XercesDOMParser* parser = new XercesDOMParser();
 
+  ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
+  parser->setErrorHandler(errHandler);
+
+  /* Schema Validation */
   //Use namespaces and schema
   parser->setDoSchema(true);
   //Set the validation scheme
   parser->setValidationScheme(XercesDOMParser::Val_Always);
   parser->setDoNamespaces(true);    // optional
-
-  Grammar* grammar = parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true);
+  parser->setExitOnFirstFatalError(true);
+  parser->setValidationConstraintFatal(true);
+  parser->setValidationSchemaFullChecking(true);
+  //If false, don't load the schema if it wasn't found in the grammar pool
+  parser->setLoadSchema(true);
+  if (NULL == parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true))
+  {
+    //schema file could not be loaded
+    cout << "Cannot load schema file";
+  }
 
   /*
-  // jingfu: try following schema validation, ding's grammar wasn't checking
-  // schema properly
   parser->setExternalNoNamespaceSchemaLocation("../common/honeyBadger.xsd");
-  //Get all errors
-  parser->setExitOnFirstFatalError(true);
-  //All validation errors are fatal.
-  parser->setValidationConstraintFatal(true);
-  //Set schema validation
-  //parser->setValidationSchemaFullChecking(false);
   */
-
-  ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
-  parser->setErrorHandler(errHandler);
 
   // create an input source from string
   MemBufInputSource xml_buf((XMLByte*)record.c_str(),(XMLSize_t) (record_len ), "test", false);
@@ -94,8 +95,6 @@ ErrorCode Message::parseXML() {
   // try to parse this document and get fields
   // TODO: maybe a better idea to put these functions into a msg class
   //msg msg;
-  LOG(INFO) << "schema check passed" << endl;
-  cout << "schema check passed" << endl;
   try {
     parser->parse(xml_buf);
     // no need to free this, owned by parent parser project
@@ -111,7 +110,7 @@ ErrorCode Message::parseXML() {
     const  XMLSize_t nodeCount = children->getLength();
     //cout <<" node count: " << nodeCount << endl;
 
-    //for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) { //TODO: why need to loop?
+    //for( XMLSize_t xx = 0; xx < nodeCount; ++xx )  //TODO: why need to loop?
     // we know message type tag follows
     DOMNode* typeNode = children->item(1);
     DOMElement* typeElement;
