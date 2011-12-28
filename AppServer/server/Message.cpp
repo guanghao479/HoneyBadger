@@ -63,31 +63,24 @@ ErrorCode Message::parseXML() {
   ErrorCode ret;
 
   // get a parser first
-  XercesDOMParser* parser = new XercesDOMParser();
+  XercesDOMParser* parser = new XercesDOMParser(); // looked up online, using a DOMBuilder would solve the problem, but where is Builder included?
+  // http://www.velocityreviews.com/forums/t392321-validation-of-xml-file-against-external-xsd-schema-using-xerces-cdt.html
 
   ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
   parser->setErrorHandler(errHandler);
-
+  //parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true);
   /* Schema Validation */
   //Use namespaces and schema
-  parser->setDoSchema(true);
+  //parser->setDoSchema(true);
   //Set the validation scheme
-  parser->setValidationScheme(XercesDOMParser::Val_Always);
-  parser->setDoNamespaces(true);    // optional
-  parser->setExitOnFirstFatalError(true);
-  parser->setValidationConstraintFatal(true);
-  parser->setValidationSchemaFullChecking(true);
+  //parser->setValidationScheme(XercesDOMParser::Val_Always);
+  //parser->setDoNamespaces(true);    // optional
+  //parser->setExitOnFirstFatalError(true);
+  //parser->setValidationConstraintFatal(true); // this line will break the xml to exception, even if the xml is legit
+  //parser->setValidationSchemaFullChecking(true);
   //If false, don't load the schema if it wasn't found in the grammar pool
-  parser->setLoadSchema(true);
-  if (NULL == parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true))
-  {
-    //schema file could not be loaded
-    cout << "Cannot load schema file";
-  }
-
-  /*
-  parser->setExternalNoNamespaceSchemaLocation("../common/honeyBadger.xsd");
-  */
+  //parser->setLoadSchema(true);
+  //parser->setExternalNoNamespaceSchemaLocation("../common/honeyBadger.xsd");
 
   // create an input source from string
   MemBufInputSource xml_buf((XMLByte*)record.c_str(),(XMLSize_t) (record_len ), "test", false);
@@ -117,8 +110,8 @@ ErrorCode Message::parseXML() {
     if( typeNode->getNodeType() &&  // true is not NULL
         typeNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
       typeElement = dynamic_cast< xercesc::DOMElement* >( typeNode );
-      if( XMLString::equals(typeElement->getTagName(), X("registerRequestMessageType"))) {
-        cout << "this is a registerRequestMessageType" << endl;
+      if( XMLString::equals(typeElement->getTagName(), X("registerRequest"))) {
+        cout << "this is a registerRequest" << endl;
         ErrorCode user_ret = (ErrorCode) getUserInfo(typeElement, &msg.user);
         assert(user_ret == OK);
         // now grab msg.user and do whatever processing of register
@@ -132,8 +125,8 @@ ErrorCode Message::parseXML() {
         ret = OK;
         goto done;
       }
-      else if( XMLString::equals(typeElement->getTagName(), X("loginRequestMessageType"))) {
-        cout << "this is a loginRequestMessageType" << endl;
+      else if( XMLString::equals(typeElement->getTagName(), X("loginRequest"))) {
+        cout << "this is a loginRequest" << endl;
         ErrorCode user_ret = getUserInfo(typeElement, &msg.user);
         assert(user_ret == OK);
 
@@ -144,8 +137,8 @@ ErrorCode Message::parseXML() {
         ret = OK;
         goto done;
       }
-      else if( XMLString::equals(typeElement->getTagName(), X("newfileRequestMessageType"))) {
-        cout << "this is a newfileRequestMessageType" << endl;
+      else if( XMLString::equals(typeElement->getTagName(), X("newfileRequest"))) {
+        cout << "this is a newfileRequest" << endl;
         assert (getUserInfo(typeElement, &msg.user) == (int) OK);
         setReplyStr("newFile_OK");
 
@@ -153,11 +146,12 @@ ErrorCode Message::parseXML() {
         goto done;
       }
       else {
-        cout << "Error: unknow message type tag" << endl;
+        LOG(ERROR) << "Error: unknown message type" << endl;
       }
     }
     else {
       cout << "Error: can't parse this xml" << endl;
+      LOG(ERROR) << "Error: can't parse this xml" << endl;
     }
 
   } // end of try
@@ -198,7 +192,7 @@ string Message::generateRegisterReplyStr(ErrorCode user_ret, user_info* user) {
     DOMDocument*   myDoc = createHBMessage();
     DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
     assert(impl != NULL);
-    assert( createRegisterOrLoginResponseDoc(myDoc, string("registerResponseMessageType"), user->uid, string("1"), string("Register succeed. Wecome to HB!")) == OK);
+    assert( createRegisterOrLoginResponseDoc(myDoc, string("registerResponse"), user->uid, string("1"), string("Register succeed. Wecome to HB!")) == OK);
     ret_str = writeOutDOM(myDoc, impl);
   }
   return ret_str;
@@ -211,7 +205,7 @@ string Message::generateLoginReplyStr(ErrorCode user_ret, user_info* user) {
     DOMDocument*   myDoc = createHBMessage();
     DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
     assert(impl != NULL);
-    assert( createRegisterOrLoginResponseDoc(myDoc, string("loginResponseMessageType"), user->uid, string("2"), string("Login succeed. You balling!")) == OK);
+    assert( createRegisterOrLoginResponseDoc(myDoc, string("loginResponse"), user->uid, string("2"), string("Login succeed. You balling!")) == OK);
     ret_str = writeOutDOM(myDoc, impl);
   }
   return ret_str;
@@ -223,8 +217,8 @@ ErrorCode Message::getUserInfo(DOMElement* requestElement, user_info* user) {
   //DOMNodeList* children = requestElement->getChildNodes();
   //DOMNode* userNode = children->item(1);
   DOMElement* userElement = requestElement;
-  if( XMLString::equals(userElement->getTagName(), X("registerRequestMessageType")) ||
-      XMLString::equals(userElement->getTagName(), X("loginRequestMessageType"))    ) {
+  if( XMLString::equals(userElement->getTagName(), X("registerRequest")) ||
+      XMLString::equals(userElement->getTagName(), X("loginRequest"))    ) {
     DOMNodeList* children = userElement->getChildNodes();
     const  XMLSize_t nodeCount = children->getLength();
     for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {

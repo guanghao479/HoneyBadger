@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
   printf("SgClient Unit Test:\n");
 
   log_without_connect();
-  log_some_msgs();
+  //log_some_msgs();
   send_new_register("jfu", "good_password_123", "fuj@cs.rpi.edu");
   requestLogin("jfu", "im_a_wrong_password", "1234567890");
   send_text_file("fmaj7", "k234324io2u3", "abc/def/ksdl");
@@ -124,7 +124,7 @@ void log_some_msgs() {
 
   //send kMsgNum messages synchronously
   int counter = 0;
-  while(counter < 3) {
+  while(counter < 1) {
     int err = hb_log(client, sendString, sendStringLen);
     assert(err == OK);
     counter++;
@@ -228,7 +228,7 @@ void createRegisterDoc(DOMDocument* doc, string id, string pw, string email) {
   {
     DOMElement* rootElem = doc->getDocumentElement();
 
-    DOMElement*  typeElem = doc->createElement(X("registerRequestMessageType"));
+    DOMElement*  typeElem = doc->createElement(X("registerRequest"));
     rootElem->appendChild(typeElem);
 
     /*
@@ -369,7 +369,7 @@ void createLoginDoc(DOMDocument* doc, string id, string pw, string email) {
   {
     DOMElement* rootElem = doc->getDocumentElement();
 
-    DOMElement*  typeElem = doc->createElement(X("loginRequestMessageType"));
+    DOMElement*  typeElem = doc->createElement(X("loginRequest"));
     rootElem->appendChild(typeElem);
 
     DOMElement*  catElem = doc->createElement(X("userid"));
