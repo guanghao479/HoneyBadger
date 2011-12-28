@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
 #include <map>
 #include <string>
 #include <fstream>
@@ -40,6 +45,7 @@ struct Message{
 
   private:
   ErrorCode getUserInfo(DOMElement* requestElement, user_info* user);
+  ErrorCode createUserDataDir(string uid);
   void setReplyStr(string reply);
   string generateRegisterReplyStr(ErrorCode, user_info*);
   string generateLoginReplyStr(ErrorCode, user_info*);
@@ -70,17 +76,16 @@ ErrorCode Message::parseXML() {
   parser->setErrorHandler(errHandler);
   //parser->loadGrammar("../common/honeyBadger.xsd", Grammar::SchemaGrammarType, true);
   /* Schema Validation */
-  //Use namespaces and schema
-  //parser->setDoSchema(true);
-  //Set the validation scheme
-  //parser->setValidationScheme(XercesDOMParser::Val_Always);
-  //parser->setDoNamespaces(true);    // optional
-  //parser->setExitOnFirstFatalError(true);
+  /*
+  parser->setExternalNoNamespaceSchemaLocation("../common/honeyBadger.xsd");
+  parser->setLoadSchema(true);
+  parser->setDoSchema(true);
+  parser->setValidationScheme(XercesDOMParser::Val_Always);
+  parser->setValidationSchemaFullChecking(true);
+  parser->setDoNamespaces(true);    // optional
+  */
+  //parser->setExitOnFirstFatalError(true); // this line doesn't do anything even if the xml is bad
   //parser->setValidationConstraintFatal(true); // this line will break the xml to exception, even if the xml is legit
-  //parser->setValidationSchemaFullChecking(true);
-  //If false, don't load the schema if it wasn't found in the grammar pool
-  //parser->setLoadSchema(true);
-  //parser->setExternalNoNamespaceSchemaLocation("../common/honeyBadger.xsd");
 
   // create an input source from string
   MemBufInputSource xml_buf((XMLByte*)record.c_str(),(XMLSize_t) (record_len ), "test", false);
@@ -118,7 +123,7 @@ ErrorCode Message::parseXML() {
         //
         // suppose this user ID is unique and everything is legit, now create
         // empty dir for this user
-        // assert (createDataDir(uid) = OK);
+        assert (createUserDataDir(msg.user.uid) == OK);
 
         setReplyStr(generateRegisterReplyStr(user_ret, &msg.user));
 
@@ -260,6 +265,28 @@ void Message::setReplyStr(string reply) {
 
 string Message::getReplyStr() {
   return replyStr;
+}
+
+ErrorCode Message::createUserDataDir(string uid) {
+
+  DIR* dir = NULL;
+  dir = opendir(kHBDataRootPath);
+  //if non-exist, create it
+  if(dir == NULL) {
+    int status = mkdir(kHBDataRootPath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if(status != 0) {
+      LOG(ERROR) << "can't create data root dir at " << kHBDataRootPath << endl;
+      exit(1);
+    }
+  }
+  else {
+    assert(closedir(dir) == 0);
+  }
+
+  // if it reaches here, root path exist
+  // TODO: integrate emma's logic with user dir creation
+
+  return OK;
 }
 
 DOMDocument* Message::createHBMessage() {

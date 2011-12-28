@@ -40,6 +40,8 @@
 #define kServerTimeout 600
 #define kTailorTimeout 600
 
+#define kHBDataRootPath "/tmp/HB_data"
+
 //ack messages for consumer
 #define kStrCurrentPos "currentPos"
 //ack for currentPos is filenameNumber, offset, size, msgID
