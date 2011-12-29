@@ -286,6 +286,7 @@ ErrorCode Message::createUserDataDir(string uid) {
   // if it reaches here, root path exist
   // TODO: integrate emma's logic with user dir creation
   //
+  //
 
   return OK;
 }
