@@ -45,6 +45,7 @@ struct Message{
 
   private:
   ErrorCode getUserInfo(DOMElement* requestElement, user_info* user);
+  ErrorCode getNewfileInfo(DOMElement* requestElement, user_info* user, file_info* file);
   ErrorCode createUserDataDir(string uid);
   void setReplyStr(string reply);
   string generateRegisterReplyStr(ErrorCode, user_info*);
@@ -121,6 +122,8 @@ ErrorCode Message::parseXML() {
         assert(user_ret == OK);
         // now grab msg.user and do whatever processing of register
         //
+        // TODO: check user authentication here
+
         // suppose this user ID is unique and everything is legit, now create
         // empty dir for this user
         assert (createUserDataDir(msg.user.uid) == OK);
@@ -144,7 +147,7 @@ ErrorCode Message::parseXML() {
       }
       else if( XMLString::equals(typeElement->getTagName(), X("newfileRequest"))) {
         cout << "this is a newfileRequest" << endl;
-        assert (getUserInfo(typeElement, &msg.user) == (int) OK);
+        assert (getNewfileInfo(typeElement, &msg.user, &msg.file) == (int) OK);
         setReplyStr("newFile_OK");
 
         ret = OK;
@@ -216,6 +219,48 @@ string Message::generateLoginReplyStr(ErrorCode user_ret, user_info* user) {
   return ret_str;
 }
 
+/**
+ * This function takes a dom element that is a new file request, parse out user
+ * info and file info and return error code.
+ */
+ErrorCode Message::getNewfileInfo(DOMElement* requestElement, user_info* user, file_info* file) {
+
+  DOMElement* userElement = requestElement;
+  if( XMLString::equals(userElement->getTagName(), X("newfileRequest")) ) {
+    DOMNodeList* children = userElement->getChildNodes();
+    const  XMLSize_t nodeCount = children->getLength();
+    for( XMLSize_t xx = 0; xx < nodeCount; ++xx ) {
+      DOMNode* crtNode = children->item(xx);
+      DOMElement* crtElement;
+      if( crtNode->getNodeType() &&  // true is not NULL
+          crtNode->getNodeType() == DOMNode::ELEMENT_NODE ) {
+        crtElement = dynamic_cast< xercesc::DOMElement* >( crtNode );
+        if( XMLString::equals(crtElement->getTagName(), X("userid"))) {
+          user->uid = XMLString::transcode(crtElement->getTextContent()) ;
+        }
+        else if( XMLString::equals(crtElement->getTagName(), X("fileid"))) {
+          file->fileid = XMLString::transcode(crtElement->getTextContent()) ;
+        }
+        else if( XMLString::equals(crtElement->getTagName(), X("filepath"))) {
+          file->filepath = XMLString::transcode(crtElement->getTextContent()) ;
+        }
+        else if( XMLString::equals(crtElement->getTagName(), X("length"))) {
+          string length =  XMLString::transcode(crtElement->getTextContent()) ;
+          file->length = atoi(length.c_str());
+        }
+      }
+    }
+  }
+  else {
+    LOG(ERROR) << "error parsing newfileRequest";
+    return BAD_XML;
+  }
+
+  cout << user->printSelfStr() << ", " << file->printSelfStr() << endl;
+
+  return OK;
+}
+
 //TODO: add exception handling
 ErrorCode Message::getUserInfo(DOMElement* requestElement, user_info* user) {
   // we know User tag follows
@@ -251,11 +296,13 @@ ErrorCode Message::getUserInfo(DOMElement* requestElement, user_info* user) {
     LOG(ERROR) << "error getting user tag";
     return BAD_XML;
   }
-  cout <<  "getUserInfo(): uid = " << user->uid << ", passwd = " << user->passwd
-                           << ", hostid = " << user->hostid << ", email = "<< user->email << endl;
+
+  LOG(INFO) << user->printSelfStr() << endl;
+  cout << user->printSelfStr() << endl;
 
   return OK;
 }
+
 Message::~Message() {
 }
 
@@ -267,11 +314,15 @@ string Message::getReplyStr() {
   return replyStr;
 }
 
+/**
+ * This functions creates user's data directory (when user tries to register).
+ * Note: it assumes user id has been validated and is legit.
+ */
 ErrorCode Message::createUserDataDir(string uid) {
 
   DIR* dir = NULL;
   dir = opendir(kHBDataRootPath);
-  //if non-exist, create it
+  //if data root dir non-exist, create it
   if(dir == NULL) {
     int status = mkdir(kHBDataRootPath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if(status != 0) {
@@ -283,10 +334,27 @@ ErrorCode Message::createUserDataDir(string uid) {
     assert(closedir(dir) == 0);
   }
 
-  // if it reaches here, root path exist
-  // TODO: integrate emma's logic with user dir creation
-  //
-  //
+  string rootdir = kHBDataRootPath;
+  string userdir = uid;
+  string absdir = rootdir;
+  absdir += "/";
+  absdir += userdir;
+
+  dir = opendir(absdir.c_str());
+  // if it doesn't exists, create it
+  if(dir == NULL) {
+    int status = mkdir(absdir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if(status != 0) {
+      LOG(ERROR) << "can't create user data dir at " << absdir.c_str() << endl;
+      return FILESYS_EXCEPTION;
+    }
+    LOG(INFO) << "created user data dir: " << absdir.c_str() << endl;
+  }
+  else {
+    // if it's already there, user auth must be wrong
+    assert(closedir(dir) == 0);
+    LOG(WARNING) << "Error: this dir (" << absdir.c_str() << ") should not exist already." << endl;
+  }
 
   return OK;
 }

@@ -67,6 +67,7 @@ enum errorCode {
   BAD_ADDR,
   SEND_FAIL,
   RECV_FAIL,
+  FILESYS_EXCEPTION,
   UNKNOWN_EXCEPTION
 };
 

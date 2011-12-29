@@ -20,7 +20,7 @@
 #define HAVE_ALLOCA_H 1
 
 /* Define to 1 if you have the <bzlib.h> header file. */
-/* #undef HAVE_BZLIB_H */
+#define HAVE_BZLIB_H 1
 
 /* Define to 1 if you have the `dgettext' function. */
 #define HAVE_DGETTEXT 1
@@ -41,13 +41,13 @@
 #define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the `bz2' library (-lbz2). */
-/* #undef HAVE_LIBBZ2 */
+#define HAVE_LIBBZ2 1
 
 /* Define to 1 if you have the <libintl.h> header file. */
 #define HAVE_LIBINTL_H 1
 
 /* Define to 1 if you have the `popt' library (-lpopt). */
-/* #undef HAVE_LIBPOPT */
+#define HAVE_LIBPOPT 1
 
 /* Define to 1 if you have the `z' library (-lz). */
 #define HAVE_LIBZ 1

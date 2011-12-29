@@ -486,28 +486,28 @@ s,@DEFS@,-DHAVE_CONFIG_H,;t t
 s,@ECHO_C@,,;t t
 s,@ECHO_N@,-n,;t t
 s,@ECHO_T@,,;t t
-s,@LIBS@,-lz ,;t t
+s,@LIBS@,-lpopt -lbz2 -lz ,;t t
 s,@INSTALL_PROGRAM@,${INSTALL},;t t
 s,@INSTALL_SCRIPT@,${INSTALL},;t t
 s,@INSTALL_DATA@,${INSTALL} -m 644,;t t
 s,@CYGPATH_W@,echo,;t t
 s,@PACKAGE@,librsync,;t t
 s,@VERSION@,0.9.7,;t t
-s,@ACLOCAL@,${SHELL} /home/shiliang/isync/librsync-0.9.7/missing --run aclocal-1.7,;t t
-s,@AUTOCONF@,${SHELL} /home/shiliang/isync/librsync-0.9.7/missing --run autoconf,;t t
-s,@AUTOMAKE@,${SHELL} /home/shiliang/isync/librsync-0.9.7/missing --run automake-1.7,;t t
-s,@AUTOHEADER@,${SHELL} /home/shiliang/isync/librsync-0.9.7/missing --run autoheader,;t t
-s,@MAKEINFO@,${SHELL} /home/shiliang/isync/librsync-0.9.7/missing --run makeinfo,;t t
-s,@AMTAR@,${SHELL} /home/shiliang/isync/librsync-0.9.7/missing --run tar,;t t
-s,@install_sh@,/home/shiliang/isync/librsync-0.9.7/install-sh,;t t
+s,@ACLOCAL@,${SHELL} /home/fuj/github/HoneyBadger/librsync/librsync-0.9.7/missing --run aclocal-1.7,;t t
+s,@AUTOCONF@,${SHELL} /home/fuj/github/HoneyBadger/librsync/librsync-0.9.7/missing --run autoconf,;t t
+s,@AUTOMAKE@,${SHELL} /home/fuj/github/HoneyBadger/librsync/librsync-0.9.7/missing --run automake-1.7,;t t
+s,@AUTOHEADER@,${SHELL} /home/fuj/github/HoneyBadger/librsync/librsync-0.9.7/missing --run autoheader,;t t
+s,@MAKEINFO@,${SHELL} /home/fuj/github/HoneyBadger/librsync/librsync-0.9.7/missing --run makeinfo,;t t
+s,@AMTAR@,${SHELL} /home/fuj/github/HoneyBadger/librsync/librsync-0.9.7/missing --run tar,;t t
+s,@install_sh@,/home/fuj/github/HoneyBadger/librsync/librsync-0.9.7/install-sh,;t t
 s,@STRIP@,strip,;t t
 s,@ac_ct_STRIP@,strip,;t t
 s,@INSTALL_STRIP_PROGRAM@,${SHELL} $(install_sh) -c -s,;t t
-s,@AWK@,mawk,;t t
+s,@AWK@,gawk,;t t
 s,@SET_MAKE@,,;t t
 s,@am__leading_dot@,.,;t t
 s,@CC@,gcc,;t t
-s,@CFLAGS@,-Wall -Wshadow -Wundef -Wwrite-strings -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Wcast-align -g -O2 -I./popt,;t t
+s,@CFLAGS@,-Wall -Wshadow -Wundef -Wwrite-strings -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Wcast-align -g -O2,;t t
 s,@LDFLAGS@,,;t t
 s,@CPPFLAGS@,,;t t
 s,@ac_ct_CC@,gcc,;t t
@@ -545,15 +545,15 @@ s,@CXXDEPMODE@,depmode=gcc3,;t t
 s,@am__fastdepCXX_TRUE@,,;t t
 s,@am__fastdepCXX_FALSE@,#,;t t
 s,@CXXCPP@,g++ -E,;t t
-s,@F77@,,;t t
-s,@FFLAGS@,,;t t
-s,@ac_ct_F77@,,;t t
+s,@F77@,gfortran,;t t
+s,@FFLAGS@,-g -O2,;t t
+s,@ac_ct_F77@,gfortran,;t t
 s,@LIBTOOL@,$(SHELL) $(top_builddir)/libtool,;t t
 s,@ALLOCA@,,;t t
 s,@RS_LONG_T@,long long,;t t
 s,@LIBOBJS@,,;t t
 s,@librsync_libversion@,1:2:0,;t t
-s,@BUILD_POPT@,popt/libpopt.a,;t t
+s,@BUILD_POPT@,,;t t
 s,@LTLIBOBJS@,,;t t
 CEOF
 
@@ -884,10 +884,13 @@ ${ac_dA}HAVE_STDINT_H${ac_dB}HAVE_STDINT_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_UNISTD_H${ac_dB}HAVE_UNISTD_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_DLFCN_H${ac_dB}HAVE_DLFCN_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_LIBZ${ac_dB}HAVE_LIBZ${ac_dC}1${ac_dD}
+${ac_dA}HAVE_LIBBZ2${ac_dB}HAVE_LIBBZ2${ac_dC}1${ac_dD}
+${ac_dA}HAVE_LIBPOPT${ac_dB}HAVE_LIBPOPT${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_ALLOCA_H${ac_dB}HAVE_ALLOCA_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_ALLOCA${ac_dB}HAVE_ALLOCA${ac_dC}1${ac_dD}
 ${ac_dA}STDC_HEADERS${ac_dB}STDC_HEADERS${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_MCHECK_H${ac_dB}HAVE_MCHECK_H${ac_dC}1${ac_dD}
+${ac_dA}HAVE_BZLIB_H${ac_dB}HAVE_BZLIB_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_ZLIB_H${ac_dB}HAVE_ZLIB_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_FCNTL_H${ac_dB}HAVE_FCNTL_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_INTTYPES_H${ac_dB}HAVE_INTTYPES_H${ac_dC}1${ac_dD}
@@ -899,9 +902,6 @@ ${ac_dA}HAVE_STDLIB_H${ac_dB}HAVE_STDLIB_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_STRING_H${ac_dB}HAVE_STRING_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_SYS_FILE_H${ac_dB}HAVE_SYS_FILE_H${ac_dC}1${ac_dD}
 ${ac_dA}HAVE_UNISTD_H${ac_dB}HAVE_UNISTD_H${ac_dC}1${ac_dD}
-${ac_dA}SIZEOF_UNSIGNED_CHAR${ac_dB}SIZEOF_UNSIGNED_CHAR${ac_dC}1${ac_dD}
-${ac_dA}SIZEOF_SHORT${ac_dB}SIZEOF_SHORT${ac_dC}2${ac_dD}
-${ac_dA}SIZEOF_UNSIGNED_SHORT${ac_dB}SIZEOF_UNSIGNED_SHORT${ac_dC}2${ac_dD}
 CEOF
   sed -f $tmp/defines.sed $tmp/in >$tmp/out
   rm -f $tmp/in
@@ -911,6 +911,9 @@ CEOF
 /^[	 ]*#[	 ]*define/!b
 t clr
 : clr
+${ac_dA}SIZEOF_UNSIGNED_CHAR${ac_dB}SIZEOF_UNSIGNED_CHAR${ac_dC}1${ac_dD}
+${ac_dA}SIZEOF_SHORT${ac_dB}SIZEOF_SHORT${ac_dC}2${ac_dD}
+${ac_dA}SIZEOF_UNSIGNED_SHORT${ac_dB}SIZEOF_UNSIGNED_SHORT${ac_dC}2${ac_dD}
 ${ac_dA}SIZEOF_INT${ac_dB}SIZEOF_INT${ac_dC}4${ac_dD}
 ${ac_dA}SIZEOF_UNSIGNED_INT${ac_dB}SIZEOF_UNSIGNED_INT${ac_dC}4${ac_dD}
 ${ac_dA}SIZEOF_LONG${ac_dB}SIZEOF_LONG${ac_dC}8${ac_dD}
@@ -965,10 +968,13 @@ ${ac_uA}HAVE_STDINT_H${ac_uB}HAVE_STDINT_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_UNISTD_H${ac_uB}HAVE_UNISTD_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_DLFCN_H${ac_uB}HAVE_DLFCN_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_LIBZ${ac_uB}HAVE_LIBZ${ac_uC}1${ac_uD}
+${ac_uA}HAVE_LIBBZ2${ac_uB}HAVE_LIBBZ2${ac_uC}1${ac_uD}
+${ac_uA}HAVE_LIBPOPT${ac_uB}HAVE_LIBPOPT${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_ALLOCA_H${ac_uB}HAVE_ALLOCA_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_ALLOCA${ac_uB}HAVE_ALLOCA${ac_uC}1${ac_uD}
 ${ac_uA}STDC_HEADERS${ac_uB}STDC_HEADERS${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_MCHECK_H${ac_uB}HAVE_MCHECK_H${ac_uC}1${ac_uD}
+${ac_uA}HAVE_BZLIB_H${ac_uB}HAVE_BZLIB_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_ZLIB_H${ac_uB}HAVE_ZLIB_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_FCNTL_H${ac_uB}HAVE_FCNTL_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_INTTYPES_H${ac_uB}HAVE_INTTYPES_H${ac_uC}1${ac_uD}
@@ -980,9 +986,6 @@ ${ac_uA}HAVE_STDLIB_H${ac_uB}HAVE_STDLIB_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_STRING_H${ac_uB}HAVE_STRING_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_SYS_FILE_H${ac_uB}HAVE_SYS_FILE_H${ac_uC}1${ac_uD}
 ${ac_uA}HAVE_UNISTD_H${ac_uB}HAVE_UNISTD_H${ac_uC}1${ac_uD}
-${ac_uA}SIZEOF_UNSIGNED_CHAR${ac_uB}SIZEOF_UNSIGNED_CHAR${ac_uC}1${ac_uD}
-${ac_uA}SIZEOF_SHORT${ac_uB}SIZEOF_SHORT${ac_uC}2${ac_uD}
-${ac_uA}SIZEOF_UNSIGNED_SHORT${ac_uB}SIZEOF_UNSIGNED_SHORT${ac_uC}2${ac_uD}
 CEOF
   sed -f $tmp/undefs.sed $tmp/in >$tmp/out
   rm -f $tmp/in
@@ -992,6 +995,9 @@ CEOF
 /^[	 ]*#[	 ]*undef/!b
 t clr
 : clr
+${ac_uA}SIZEOF_UNSIGNED_CHAR${ac_uB}SIZEOF_UNSIGNED_CHAR${ac_uC}1${ac_uD}
+${ac_uA}SIZEOF_SHORT${ac_uB}SIZEOF_SHORT${ac_uC}2${ac_uD}
+${ac_uA}SIZEOF_UNSIGNED_SHORT${ac_uB}SIZEOF_UNSIGNED_SHORT${ac_uC}2${ac_uD}
 ${ac_uA}SIZEOF_INT${ac_uB}SIZEOF_INT${ac_uC}4${ac_uD}
 ${ac_uA}SIZEOF_UNSIGNED_INT${ac_uB}SIZEOF_UNSIGNED_INT${ac_uC}4${ac_uD}
 ${ac_uA}SIZEOF_LONG${ac_uB}SIZEOF_LONG${ac_uC}8${ac_uD}
