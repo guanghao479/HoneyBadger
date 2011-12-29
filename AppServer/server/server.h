@@ -2,6 +2,7 @@
 #define HB_SERVER_H_
 
 #include <sstream>
+
 using namespace std;
 
 typedef struct user_info_s {
