@@ -5,9 +5,9 @@
 #include <event2/thread.h>
 #include <arpa/inet.h>
 
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-#include <openssl/rand.h>
+//#include <openssl/ssl.h>
+//#include <openssl/err.h>
+//#include <openssl/rand.h>
 
 #include <glog/logging.h>
 
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
 
   struct event_base *base;
   struct evconnlistener *listener;
-  SSL_CTX* ctx; // TODO: to add secure transport layer
+  //SSL_CTX* ctx; // TODO: to add secure transport layer
   struct sockaddr_in sin;
 
   int port = kServerPort;
