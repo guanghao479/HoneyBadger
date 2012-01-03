@@ -329,6 +329,7 @@ ErrorCode Message::createUserDataDir(string uid) {
       LOG(ERROR) << "can't create data root dir at " << kHBDataRootPath << endl;
       exit(1);
     }
+    LOG(INFO) << "Created HB Data Root Path at " << kHBDataRootPath << endl;
   }
   else {
     assert(closedir(dir) == 0);
