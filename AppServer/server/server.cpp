@@ -228,8 +228,8 @@ int main(int argc, char **argv)
   /* This is an INET address */
   sin.sin_family = AF_INET;
   /* Listen on 0.0.0.0 */
-  //sin.sin_addr.s_addr = htonl(0);
-  sin.sin_addr.s_addr = inet_addr("127.0.0.1");
+  sin.sin_addr.s_addr = htonl(INADDR_ANY);
+  //sin.sin_addr.s_addr = inet_addr("127.0.0.1");
   /* Listen on the given port. */
   sin.sin_port = htons(port);
 
