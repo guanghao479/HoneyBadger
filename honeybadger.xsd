@@ -91,6 +91,7 @@
     <xs:sequence>
       <xs:element name="userid" type="useridType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="fileid" type="fileidType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="hostid" type="hostidType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="filepath" type="filepathType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="length" type="filelengthType" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>

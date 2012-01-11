@@ -27,7 +27,16 @@ int total_tests = 0;
 void log_without_connect();
 void log_some_msgs();
 void send_new_register(std::string, std::string, std::string);
-void send_text_file(std::string, std::string, std::string);
+
+// File related Messages
+void send_new_file(std::string, std::string, std::string);
+void send_file_content(std::string, std::string);
+// File message related helpers
+void createAndAppendNewFileMetaDoc(DOMDocument* doc, string userid,
+        string hostid, string fileid, string filepath);
+void createAndAppendFileContentDoc(DOMDocument* doc, string fileid,
+        string filepath);
+
 void dup_register();
 void valid_login();
 void invalid_login();
@@ -39,8 +48,6 @@ void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl);
 void createLoginDoc(DOMDocument* doc, string id, string pw, string hostid);
 void requestLogin(string, string, string);
 DOMDocument* createHBMessage();
-void createAndAppendTextFileDoc(DOMDocument* doc, string userid, string hostid,
-        string filepath);
 
 int main(int argc, char** argv) {
   try {
@@ -60,7 +67,7 @@ int main(int argc, char** argv) {
   //log_some_msgs();
   send_new_register("jfu", "good_password_123", "fuj@cs.rpi.edu");
   requestLogin("jfu", "im_a_wrong_password", "1234567890");
-  send_text_file("fmaj7", "k234324io2u3", "abc/def/ksdl");
+  send_new_file("fmaj7", "k234324io2u3", "abc/def/ksdl");
   dup_register();
   valid_login();
   invalid_login();
@@ -193,16 +200,34 @@ void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl){
   log_some_msgs(output, msg_len);
 }
 
-void send_text_file(std::string userid, std::string hostid, std::string filepath) {
+void send_new_file(std::string userid, std::string hostid, std::string filepath) {
     total_tests ++;
     std::cout << std::endl << "====>" << std::endl;
 
     DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
-    DOMDocument* myDoc = createHBMessage();
-    createAndAppendTextFileDoc(myDoc, userid, hostid, filepath);
+    //TODO:: generate unique file id
+    string fileid = "A1B2C3D4E5";
 
+    DOMDocument* myDoc = createHBMessage();
+    createAndAppendNewFileMetaDoc(myDoc, userid, hostid, fileid, filepath);
     writeOutDOM(myDoc, impl);
-    std::cout << "send_text_file(): userid="<<userid <<", hostid="<<hostid <<", filepath="<<filepath << std::endl;
+
+    send_file_content(fileid, filepath);
+
+    std::cout << "send_new_file(): userid="<<userid <<", hostid="<<hostid <<", filepath="<<filepath << std::endl;
+    total_passed++;
+}
+
+void send_file_content(std::string fileid, std::string filepath) {
+    total_tests ++;
+    std::cout << std::endl << "====>" << std::endl;
+
+    DOMImplementation* impl = DOMImplementationRegistry::getDOMImplementation(X("Core"));
+    DOMDocument* myDoc = createHBMessage();
+    createAndAppendFileContentDoc(myDoc, fileid, filepath);
+    writeOutDOM(myDoc, impl);
+
+    std::cout << "send_file_content(): userid="<<fileid <<", filepath="<<filepath << std::endl;
     total_passed++;
 }
 
@@ -308,37 +333,68 @@ DOMElement* createTextNode(DOMDocument* doc, string name, string val) {
     return textNodeElem;
 }
 
-void createAndAppendTextFileDoc(DOMDocument* doc, string userid, string hostid,
-        string filepath) {
+void createAndAppendNewFileMetaDoc(DOMDocument* doc, string userid, string hostid,
+        string fileid, string filepath) {
 
     int errorCode = 0;
     try
     {
         DOMElement* rootElem = doc->getDocumentElement();
 
-        DOMElement* typeElem = doc->createElement(X("Type"));
-        rootElem->appendChild(typeElem);
-        typeElem->setAttribute(X("Type"), X("File"));
-
-        DOMElement* requestElem = doc->createElement(X("Request"));
+        DOMElement* requestElem = doc->createElement(X("newfileRequest"));
         rootElem->appendChild(requestElem);
 
-        DOMElement* uidElem = createTextNode(doc, "uid", userid);
+        DOMElement* uidElem = createTextNode(doc, "userid", userid);
         requestElem->appendChild(uidElem);
 
         DOMElement* hostidElem = createTextNode(doc, "hostid", hostid);
         requestElem->appendChild(hostidElem);
 
-        DOMElement* fileElem = doc->createElement(X("file"));
-        requestElem->appendChild(fileElem);
+        DOMElement* fileidElem = createTextNode(doc, "fileid", fileid);
+        requestElem->appendChild(fileidElem);
 
-        DOMElement* filepathElem = createTextNode(doc, "path", filepath);
-        fileElem->appendChild(filepathElem);
+        DOMElement* filepathElem = createTextNode(doc, "filepath", filepath);
+        requestElem->appendChild(filepathElem);
+
+        // Now count the number of elements in the above DOM tree.
+        const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
+        cout << "The tree just created contains: " << elementCount << " elements." << endl;
+    }
+    catch (const OutOfMemoryException&)
+    {
+        cerr << "OutOfMemoryException" << endl;
+        errorCode = 5;
+    }
+    catch (const DOMException& e)
+    {
+        cerr << "DOMException code is:  " << e.code << endl;
+        errorCode = 2;
+    }
+    catch (...)
+    {
+        cerr << "An error occurred creating the document" << endl;
+        errorCode = 3;
+    }
+}
+
+void createAndAppendFileContentDoc(DOMDocument* doc, string fileid,
+      string filepath) {
+
+    int errorCode = 0;
+    try
+    {
+        DOMElement* rootElem = doc->getDocumentElement();
+
+        DOMElement* requestElem = doc->createElement(X("filecontentRequest"));
+        rootElem->appendChild(requestElem);
+
+        DOMElement* fileElem = createTextNode(doc, "file", fileid);
+        requestElem->appendChild(fileElem);
 
         //string filecontent = getTextFileContent(string filepath);
         string filecontent = "test";
         DOMElement* filecontentElem = createTextNode(doc, "content", filecontent);
-        fileElem->appendChild(filecontentElem);
+        requestElem->appendChild(filecontentElem);
 
         // Now count the number of elements in the above DOM tree.
         const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
