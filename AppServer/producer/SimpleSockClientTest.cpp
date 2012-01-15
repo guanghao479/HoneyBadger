@@ -12,7 +12,8 @@
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 #include <iostream>
 #include <string>
-
+#include <fstream>
+#include <sstream>
 #include "SimpleSockClient.h"
 #include "../common/XStr.cpp"
 
@@ -21,21 +22,23 @@ using namespace xercesc;
 
 char const* sHost = "127.0.0.1";
 int nPort         = kServerPort;
+int MAX_SIZE      = 1000; // 1000 bytes?
 
 int total_passed = 0;
 int total_tests = 0;
+std::string intToString(int);
 void log_without_connect();
 void log_some_msgs();
 void send_new_register(std::string, std::string, std::string);
 
 // File related Messages
-void send_new_file(std::string, std::string, std::string);
-void send_file_content(std::string, std::string);
+void send_new_file(std::string, std::string, char*);
+void send_file_content(std::string, char*);
 // File message related helpers
 void createAndAppendNewFileMetaDoc(DOMDocument* doc, string userid,
-        string hostid, string fileid, string filepath);
+        string hostid, string fileid, char* filepath);
 void createAndAppendFileContentDoc(DOMDocument* doc, string fileid,
-        string filepath);
+        char* filepath);
 
 void dup_register();
 void valid_login();
@@ -67,7 +70,7 @@ int main(int argc, char** argv) {
   //log_some_msgs();
   send_new_register("jfu", "good_password_123", "fuj@cs.rpi.edu");
   requestLogin("jfu", "im_a_wrong_password", "1234567890");
-  send_new_file("fmaj7", "k234324io2u3", "abc/def/ksdl");
+  send_new_file("fmaj7", "k234324io2u3", "test");
   dup_register();
   valid_login();
   invalid_login();
@@ -200,7 +203,7 @@ void writeOutDOM(DOMDocument* myDoc, DOMImplementation* impl){
   log_some_msgs(output, msg_len);
 }
 
-void send_new_file(std::string userid, std::string hostid, std::string filepath) {
+void send_new_file(std::string userid, std::string hostid, char* filepath) {
     total_tests ++;
     std::cout << std::endl << "====>" << std::endl;
 
@@ -218,7 +221,7 @@ void send_new_file(std::string userid, std::string hostid, std::string filepath)
     total_passed++;
 }
 
-void send_file_content(std::string fileid, std::string filepath) {
+void send_file_content(std::string fileid, char* filepath) {
     total_tests ++;
     std::cout << std::endl << "====>" << std::endl;
 
@@ -334,7 +337,7 @@ DOMElement* createTextNode(DOMDocument* doc, string name, string val) {
 }
 
 void createAndAppendNewFileMetaDoc(DOMDocument* doc, string userid, string hostid,
-        string fileid, string filepath) {
+        string fileid, char* filepath) {
 
     int errorCode = 0;
     try
@@ -378,23 +381,37 @@ void createAndAppendNewFileMetaDoc(DOMDocument* doc, string userid, string hosti
 }
 
 void createAndAppendFileContentDoc(DOMDocument* doc, string fileid,
-      string filepath) {
+      char* filepath) {
 
     int errorCode = 0;
     try
     {
         DOMElement* rootElem = doc->getDocumentElement();
 
-        DOMElement* requestElem = doc->createElement(X("filecontentRequest"));
-        rootElem->appendChild(requestElem);
 
-        DOMElement* fileElem = createTextNode(doc, "file", fileid);
-        requestElem->appendChild(fileElem);
-
-        //string filecontent = getTextFileContent(string filepath);
-        string filecontent = "test";
-        DOMElement* filecontentElem = createTextNode(doc, "content", filecontent);
-        requestElem->appendChild(filecontentElem);
+        char buffer[MAX_SIZE];
+        ifstream myFile (filepath, ios::in|ios::binary);
+        if (!myFile) {
+          // An error occurred!
+          // myFile.gcount() returns the number of bytes read.
+          // calling myFile.clear() will reset the stream state
+          // so it is usable again.
+          cout << "ERROR: Cannot open file.";
+        }
+        int sequence = 0;
+        while (myFile.read (buffer, MAX_SIZE)) {
+          DOMElement* requestElem = doc->createElement(X("filecontentRequest"));
+          rootElem->appendChild(requestElem);
+          DOMElement* fileElem = createTextNode(doc, "file", fileid);
+          requestElem->appendChild(fileElem);
+          string filecontent (buffer, buffer+MAX_SIZE);
+          DOMElement* filecontentElem = createTextNode(doc, "content", filecontent);
+          requestElem->appendChild(filecontentElem);
+          cout << "filecontent:" << filecontent;
+          DOMElement* sequenceElem = createTextNode(doc, "sequence", intToString(sequence));
+          requestElem->appendChild(sequenceElem);
+          ++sequence;
+        }
 
         // Now count the number of elements in the above DOM tree.
         const XMLSize_t elementCount = doc->getElementsByTagName(X("*"))->getLength();
@@ -508,4 +525,14 @@ void log_some_msgs(string msg, int len) {
   hb_disconnect(client);
 
   printf("All messages acknowledged.\n");
+}
+
+std::string intToString(int i)
+{
+  std::stringstream ss;
+  std::string s;
+  ss << i;
+  s = ss.str();
+
+  return s;
 }
